@@ -1,0 +1,16 @@
+{
+    "name": "hoodie-worker-users",
+    "version": "0.0.1",
+    "dependencies": {
+        "q": "*",
+        "cradle": "*"
+    },
+    "main": "lib/Worker.js",
+    "devDependencies": {
+        "mocha": "*"
+    },
+    "scripts": {
+        "test": "mocha",
+        "start": "node index.js"
+    }
+}
