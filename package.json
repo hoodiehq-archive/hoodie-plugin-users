@@ -3,7 +3,8 @@
     "version": "0.0.1",
     "dependencies": {
         "q": "*",
-        "cradle": "*"
+        "cradle": "*",
+        "hoodie-worker": "git://github.com/hoodiehq/hoodie-worker.git"
     },
     "main": "lib/Worker.js",
     "devDependencies": {

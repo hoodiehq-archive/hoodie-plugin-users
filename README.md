@@ -1,3 +1,3 @@
 # Hoodie users Worker
 
-Ohai.
+Ohai. Can I haz users?

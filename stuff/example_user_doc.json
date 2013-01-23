@@ -1,9 +1,9 @@
 {
-   "_id": "org.couchdb.user:user/joe@example.com",
-   "name": "user/joe@example.com",
+   "_id": "org.couchdb.user:user/joe2@example.com",
+   "name": "user/joe2@example.com",
    "roles": [],
    "type": "user",
-   "ownerHash": "atk724d",
-   "database": "user/atk724d",
+   "ownerHash": "2",
+   "database": "user/2",
    "password": "secret"
 }
