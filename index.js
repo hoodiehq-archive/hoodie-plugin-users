@@ -1,4 +1,4 @@
-var Worker = require("./lib/Worker.js");
+var Worker = require("./lib/worker.js");
 var fs     = require("fs");
 
 var package_json = JSON.parse(fs.readFileSync("./package.json"));

@@ -5,6 +5,7 @@
         "q": "*",
         "cradle": "*",
         "hoodie-worker": "git://github.com/hoodiehq/hoodie-worker.git",
+        "nodemailer": "*",
         "clone": "*"
     },
     "main": "lib/Worker.js",
