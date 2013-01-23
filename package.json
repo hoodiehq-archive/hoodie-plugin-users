@@ -4,7 +4,8 @@
     "dependencies": {
         "q": "*",
         "cradle": "*",
-        "hoodie-worker": "git://github.com/hoodiehq/hoodie-worker.git"
+        "hoodie-worker": "git://github.com/hoodiehq/hoodie-worker.git",
+        "clone": "*"
     },
     "main": "lib/Worker.js",
     "devDependencies": {
