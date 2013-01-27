@@ -1,6 +1,6 @@
 {
     "name": "hoodie-worker-users",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "dependencies": {
         "q": "*",
         "cradle": "*",
@@ -8,7 +8,7 @@
         "nodemailer": "*",
         "clone": "*"
     },
-    "main": "lib/Worker.js",
+    "main": "lib/worker.js",
     "devDependencies": {
         "mocha": "*"
     },
