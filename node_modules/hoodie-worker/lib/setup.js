@@ -39,14 +39,14 @@ Setup.prototype.readGlobalConfig = function() {
   var get   = this.worker.promisify( this.worker.couch.database('modules'), 'get');
 
   this.log("reading global config ...")
-  return get('global_config').then( this.setGlobalConfig.bind(this) )
+  return get('module/global_config').then( this.setGlobalConfig.bind(this) )
 };
 
 Setup.prototype.readUserConfig = function() {
   var get = this.worker.promisify( this.worker.couch.database('modules'), 'get')
   
   this.log("reading user config ...")
-  return get(this.worker.name)
+  return get("module/" + this.worker.name)
   .then(
     this.setWorkerConfig.bind(this),
     this.handleReadWorkerConfigError.bind(this)
@@ -66,7 +66,7 @@ Setup.prototype.createConfigInModulesDatabase = function() {
   this.log('creatinging object in modules database ...');
 
   var doc = {
-    "_id"       : this.worker.name,
+    "_id"       : "module/" + this.worker.name, 
     "createdAt" : new Date(),
     "updatedAt" : new Date(),
     "config"    : {}
