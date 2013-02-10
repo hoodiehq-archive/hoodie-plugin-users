@@ -2,7 +2,6 @@
     "name": "hoodie-worker-users",
     "version": "0.0.3",
     "dependencies": {
-        "q": "*",
         "cradle": "*",
         "hoodie-worker": "git://github.com/hoodiehq/hoodie-worker.git",
         "nodemailer": "*",
@@ -10,10 +9,11 @@
     },
     "main": "lib/worker.js",
     "devDependencies": {
-        "mocha": "*"
+        "jasmine-node": "*",
+        "when": "*"
     },
     "scripts": {
-        "test": "mocha",
+        "test": "jasmine-node spec",
         "start": "node index.js"
     }
 }
