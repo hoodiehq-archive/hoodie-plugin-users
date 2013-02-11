@@ -11,7 +11,7 @@ var WorkerMock         = require("./mocks/worker.js");
 describe('UserAccount', function () {
   beforeEach(function() {
     spyOn(UserAccount.prototype, "setProperties");
-    spyOn(UserAccount.prototype, "listenToChanges");
+    spyOn(UserAccount.prototype, "listenUp");
     spyOn(UserAccount.prototype, "emit");
     spyOn(UserAccount.prototype, "log");
 
@@ -40,7 +40,7 @@ describe('UserAccount', function () {
     });
 
     it('should listen to changes', function () {
-      expect(this.account.listenToChanges).wasCalled();
+      expect(this.account.listenUp).wasCalled();
     });
   }); // constructor
 
@@ -59,14 +59,14 @@ describe('UserAccount', function () {
     });
   }); // #setProperties(properties)
 
-  describe('#listenToChanges()', function () {
+  describe('#listenUp()', function () {
     beforeEach(function() {
       spyOn(this.account, "on");
       spyOn(this.account, "handleChange");
       spyOn(this.account, "handleUsernameChange");
       spyOn(this.account, "confirm");
-      this.account.listenToChanges.andCallThrough()
-      this.account.listenToChanges()
+      this.account.listenUp.andCallThrough()
+      this.account.listenUp()
     });
     it('should subscribe to change events', function () {
       var args = this.account.on.calls[0].args
@@ -86,7 +86,7 @@ describe('UserAccount', function () {
       args[1]('created')
       expect(this.account.confirm).wasCalledWith('created');
     });
-  }); // #listenToChanges(properties)
+  }); // #listenUp(properties)
 
   describe('#handleChange( change )', function () {
     it('should set properties from change.doc', function (done) {

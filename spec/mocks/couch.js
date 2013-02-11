@@ -17,9 +17,12 @@ var changesApi = {}
 changesApi.on = getSpy('on').andReturn(changesApi)
 
 var databaseApi = {
+  create  : getSpy('create'),
+  destroy : getSpy('destroy'),
   get     : getSpy('get'),
   save    : getSpy('save'),
   remove  : getSpy('remove'),
+  query   : getSpy('query'),
   changes : getSpy('changes').andReturn(changesApi)
 }
 CouchMock.prototype.changesApi  = changesApi
