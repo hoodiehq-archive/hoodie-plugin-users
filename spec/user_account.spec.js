@@ -170,7 +170,7 @@ describe('UserAccount', function () {
 
   describe('#save()', function () {
     beforeEach(function() {
-      spyOn(this.account, "handleSave");
+      spyOn(this.account, "handleSaveSuccess");
       this.account.properties = this.properties
       this.promise = this.account.save()
       this.callback = this.account.worker.usersDatabase.save.mostRecentCall.args[3]
@@ -183,8 +183,8 @@ describe('UserAccount', function () {
       beforeEach(function() {
         this.callback(null, 'woot')
       });
-      it('should #handleSave()', function (done) {
-        expect(this.account.handleSave).wasCalledWith('woot');
+      it('should #handleSaveSuccess()', function (done) {
+        expect(this.account.handleSaveSuccess).wasCalledWith('woot');
       });
       it("should return a resolved promise", function() {
         expect(this.promise).toBeResolved();
@@ -201,15 +201,15 @@ describe('UserAccount', function () {
     });
   }); // '#save()
 
-  describe('#handleSave(response)', function () {
+  describe('#handleSaveSuccess(response)', function () {
     beforeEach(function() {
       this.account.properties = {}
-      this.account.handleSave( {rev : 'rev123'})
+      this.account.handleSaveSuccess( {rev : 'rev123'})
     });
     it('shoul update properties._rev', function () {
       expect(this.account.properties._rev).toEqual('rev123');
     });
-  }); // #handleSave(response)
+  }); // #handleSaveSuccess(response)
 
 
   describe('#handleSignUpError(error)', function () {

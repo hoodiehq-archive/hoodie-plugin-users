@@ -5,6 +5,8 @@ var UserAccountMock = require("./mocks/user_account.js");
 var CouchMock       = require("./mocks/couch.js");
 var UserDatabase    = require("./../lib/user_database.js");
 
+setTimeout( function() {
+
 describe('UserDatabase', function () {
   beforeEach(function() {
     spyOn(UserDatabase.prototype, "log");
@@ -130,3 +132,5 @@ describe('UserDatabase', function () {
     });
   }); // #drop()
 }); // UserAccount
+
+}, 100)

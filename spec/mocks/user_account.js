@@ -11,7 +11,9 @@ afterEach(function() {
 });
 
 var UserAccount = {
-  on : getSpy('on')
+  on  : getSpy('on'),
+  log : getSpy('log'),
+  properties : {}
 };
 
 module.exports = UserAccount;
