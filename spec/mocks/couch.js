@@ -4,6 +4,12 @@ var getSpy = function(name) {
   spies.push(spy)
   return spy
 }
+afterEach(function() {
+  for (var i = 0; i < spies.length; i++) {
+    spies[i].reset()
+  }
+});
+
 var CouchMock = function(options) {
   this.options = options;
 }
@@ -13,6 +19,7 @@ changesApi.on = getSpy('on').andReturn(changesApi)
 var databaseApi = {
   get     : getSpy('get'),
   save    : getSpy('save'),
+  remove  : getSpy('remove'),
   changes : getSpy('changes').andReturn(changesApi)
 }
 CouchMock.prototype.changesApi  = changesApi
@@ -23,8 +30,3 @@ module.exports = CouchMock;
 module.exports.changesApi = changesApi;
 module.exports.databaseApi = databaseApi;
 
-afterEach(function() {
-  for (var i = 0; i < spies.length; i++) {
-    spies[i].reset()
-  }
-});

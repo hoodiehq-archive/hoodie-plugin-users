@@ -37,6 +37,29 @@ afterEach(function() {
 // https://gist.github.com/gr2m/2191748
 // addjusted for when.js
 JasminePromiseMatchers = {}
+JasminePromiseMatchers.wasCalledWithArgs = function() {
+  var expectedArgs = jasmine.util.argsToArray(arguments);
+  var actualArgs = this.actual.argsForCall[0].slice(0);
+  actualArgs.pop()
+  actualArgs = [actualArgs]
+  if (!jasmine.isSpy(this.actual)) {
+    throw new Error('Expected a spy, but got ' + jasmine.pp(this.actual) + '.');
+  }
+
+  this.message = function() {
+    var invertedMessage = "Expected spy " + this.actual.identity + " not to have been called with " + jasmine.pp(expectedArgs) + " but it was.";
+    var positiveMessage = "";
+    if (this.actual.callCount === 0) {
+      positiveMessage = "Expected spy " + this.actual.identity + " to have been called with " + jasmine.pp(expectedArgs) + " but it was never called.";
+    } else {
+      positiveMessage = "Expected spy " + this.actual.identity + " to have been called with " + jasmine.pp(expectedArgs) + " but actual calls were " + jasmine.pp(actualArgs).replace(/^\[ | \]$/g, '')
+    }
+    return [positiveMessage, invertedMessage];
+  };
+
+
+  return this.env.contains_(actualArgs, expectedArgs);
+}
 JasminePromiseMatchers.toBePromise = function() {
   return this.actual.then && !this.actual.resolve;
 };

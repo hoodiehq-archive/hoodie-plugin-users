@@ -10,7 +10,8 @@
     "main": "lib/worker.js",
     "devDependencies": {
         "jasmine-node": "*",
-        "when": "*"
+        "when": "~1.7",
+        "when-promisify": "*"
     },
     "scripts": {
         "test": "jasmine-node spec",

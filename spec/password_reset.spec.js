@@ -1,11 +1,9 @@
 require('./spec_helper.js');
 
-var when          = require("when");
-var PasswordReset = require("./../lib/password_reset.js");
-var WorkerMock    = require("./mocks/worker.js");
-var nodemailer    = require("nodemailer");
-
-// spyOn(nodemailer, "createTransport").andReturn( jasmine.createSpy('smtpTransport') );
+var when           = require("when");
+var PasswordReset  = require("./../lib/password_reset.js");
+var WorkerMock     = require("./mocks/worker.js");
+var nodemailerMock = require("./mocks/nodemailer.js");
 
 describe('PasswordReset', function () {
   beforeEach(function () {
@@ -18,14 +16,15 @@ describe('PasswordReset', function () {
 
     spyOn(PasswordReset.prototype, 'process')
     spyOn(PasswordReset.prototype, 'log')
+    spyOn(PasswordReset.prototype, '_uuid').andReturn('uuid');
     this.pwReset = new PasswordReset(this.passwordResetDoc, WorkerMock)
   });
 
   describe('constructor', function () {
-    it('should set this.worker', function (done) {
+    it('should set this.worker', function () {
       expect(this.pwReset.worker).toEqual(WorkerMock);
     });
-    it('should set this.properties', function (done) {
+    it('should set this.properties', function () {
       expect(this.pwReset.properties).toEqual(this.passwordResetDoc);
     });
     it("should set userId", function() {
@@ -195,8 +194,8 @@ describe('PasswordReset', function () {
         });
 
         it("should resolve", function() {
-          var promise = this.pwReset.prepare()
-          expect(promise).toBeResolved();
+          this.promise = this.pwReset.prepare()
+          expect(this.promise).toBeResolved();
         });
 
         _and('subject or text has been configured by user configured', function () {
@@ -220,6 +219,222 @@ describe('PasswordReset', function () {
       });
     });
   });
+
+  describe('#checkIfUserExists()', function () {
+    beforeEach(function () {
+      spyOn(this.pwReset, "handleUserNotFound");
+      this.promise = this.pwReset.checkIfUserExists()
+    });
+    it('should load userId from couch', function () {
+      expect(this.pwReset.worker.usersDatabase.get).wasCalledWithArgs('org.couchdb.user:user/joe@example.com');
+    });
+
+    _when('user could be found', function () {
+      beforeEach(function() {
+        var cb = this.pwReset.worker.usersDatabase.get.mostRecentCall.args[1];
+        cb( null, 'w00t')
+      });
+      it('should resolve', function () {
+        expect(this.promise).toBeResolvedWith('w00t');
+      });
+    });
+
+    _when('user cannot be found', function () {
+      beforeEach(function() {
+        var cb = this.pwReset.worker.usersDatabase.get.mostRecentCall.args[1];
+        cb( 'ooops')
+      });
+      it('should #handleUserNotFound()', function () {
+        expect(this.pwReset.handleUserNotFound).wasCalledWith('ooops');
+      });
+    });
+  }); // #checkIfUserExists()
+
+  describe('#setUserObject(userObject)', function () {
+    it('should set this.userObject?', function () {
+      expect(this.pwReset.userObject).toBeUndefined();
+      this.pwReset.setUserObject( 'banana' )
+      expect(this.pwReset.userObject).toBe('banana');
+    });
+  }); // #setUserObject(userObject)
+
+  describe('#handleUserNotFound(error)', function () {
+    it('should reject with error message', function () {
+      this.promise = this.pwReset.handleUserNotFound( {} )
+      expect(this.promise).toBeRejectedWith( "An account with the email address joe@example.com could not be found" );
+    });
+  }); // #handleUserNotFound(error)
+
+  describe('#generateNewPassword()', function () {
+    beforeEach(function() {
+      this.pwReset.userObject = {
+        salt : 'salt',
+        password_sha : 'password_sha'
+      }
+      this.pwReset.generateNewPassword()
+    });
+    it('should remove salt and password_sha from userObject?', function () {
+      expect(this.pwReset.userObject.salt).toBeUndefined();
+      expect(this.pwReset.userObject.password_sha).toBeUndefined();
+    });
+    it("should generate new password", function() {
+      expect(this.pwReset.newPassword).toEqual('uuid');
+      expect(this.pwReset.userObject.password).toEqual('uuid');
+    });
+  }); // #generateNewPassword()
+
+  describe('#updateUserObject()', function () {
+    beforeEach(function () {
+      this.pwReset.userObject = {
+        _id : '_id', 
+        _rev : '_rev'
+      }
+      this.promise = this.pwReset.updateUserObject()
+      this.callback = this.pwReset.worker.usersDatabase.save.mostRecentCall.args[3];
+    });
+    it('should update user doc', function () {
+      expect(this.pwReset.worker.usersDatabase.save).wasCalledWithArgs('_id', '_rev', this.pwReset.userObject);
+    });
+
+    _when('update succeeds', function () {
+      beforeEach(function() { 
+        this.callback( null, 'w00t')
+      });
+      it('should resolve', function () {
+        expect(this.promise).toBeResolvedWith('w00t');
+      });
+    });
+
+    _when('user cannot be found', function () {
+      beforeEach(function() {
+        this.callback( 'ooops')
+      });
+      it('should reject', function () {
+        expect(this.promise).toBeRejectedWith('ooops')
+      });
+    });
+  }); // #updateUserObject()
+
+  describe('#sendNewPassword()', function () {
+    beforeEach(function() {
+      spyOn(this.pwReset, "handleSendEmailError")
+
+      this.pwReset.emailAddress = 'joe@example.com'
+      this.pwReset.newPassword  = 'secret'
+      this.pwReset.emailConfig = {
+        transport : 'transportConfig',
+        from : "password-reset@example.com",
+        subject : "ohay {{email}}",
+        text : "email: {{email}}, password: {{password}}"
+      }
+
+      this.promise  = this.pwReset.sendNewPassword()
+      this.callback = nodemailerMock.transportMock.sendMail.mostRecentCall.args[1]
+    });
+    it('should create an email transport object', function () {
+      expect(nodemailerMock.createTransport).wasCalledWith('SMTP', 'transportConfig');
+    });
+    it("should send the mail", function() {
+      expect(nodemailerMock.transportMock.sendMail).wasCalledWithArgs({
+        from : "password-reset@example.com",
+        to : 'joe@example.com',
+        subject : "ohay joe@example.com",
+        text : "email: joe@example.com, password: secret"
+      });
+    });
+
+    it("should return a promise", function() {
+      expect(this.promise).toBePromise();
+    });
+
+    _when('sending email succeeds', function () {
+      beforeEach(function() {
+        this.callback( null, 'woot')
+      });
+      it('should resolve', function () {
+        expect(this.promise).toBeResolvedWith('woot');
+      });
+    });
+
+    _when('sending email fails', function () {
+      beforeEach(function() {
+        this.callback( 'ooops')
+      });
+      it('should #handleSendEmailError()', function () {
+        expect(this.pwReset.handleSendEmailError).wasCalledWith('ooops')
+      });
+    });
+  }); // #sendNewPassword()
+
+  describe('#cleanupPasswordReset()', function () {
+    beforeEach(function() {
+      this.pwReset.smtpTransport = nodemailerMock.transportMock
+      spyOn(this.pwReset, "emit");
+      this.promise  = this.pwReset.cleanupPasswordReset()
+      this.callback = this.pwReset.worker.usersDatabase.remove.mostRecentCall.args[2];
+    });
+    it('should remove password reset doc from _users', function (done) {
+      var id  = "org.couchdb.user:$passwordReset/joe@example.com/hash";
+      var rev = "1-8d7d6e48c73ef2b311fcdfcdd2a8bf11";
+      expect(this.pwReset.worker.usersDatabase.remove).wasCalledWithArgs(id, rev);
+    });
+
+    _when('cleanup succeeds', function () {
+      beforeEach(function() {
+        this.callback( null, 'w00t' )
+      });
+      it('should emit `deleted` event', function () {
+        expect(this.pwReset.emit).wasCalledWith('deleted')
+      });
+      it('should close smtp transport connection', function () {
+        expect(this.pwReset.smtpTransport.close).wasCalled()
+      });
+      it('should resolve', function () {
+        expect(this.promise).toBeResolved()
+      });
+    });
+
+    _when('cleanup fails', function () {
+      beforeEach(function() {
+        this.callback( 'ooops' )
+      });
+      it('should reject', function () {
+        expect(this.promise).toBeRejectedWith('ooops')
+      });
+    });
+  });
+
+  describe('#markDocAsFailed', function () {
+    beforeEach(function() {
+      this.pwReset.markDocAsFailed( 'banana' )
+      this.callback = this.pwReset.worker.usersDatabase.save.mostRecentCall.args[3]
+    });
+    it('should add $error to properties', function (done) {
+      expect(this.pwReset.properties.$error).toEqual('banana');
+    });
+    it('should update the document in _users', function (done) {
+      var id  = "org.couchdb.user:$passwordReset/joe@example.com/hash";
+      var rev = "1-8d7d6e48c73ef2b311fcdfcdd2a8bf11";
+      var doc = this.passwordResetDoc
+      expect(this.pwReset.worker.usersDatabase.save).wasCalledWithArgs(id, rev, doc);
+    });
+
+    _when('updating doc in _users succeeds', function () {
+      beforeEach(function() {
+        this.callback( null, 'w00t' )
+      });
+      // it just logs atm
+    });
+
+    _when('updating doc in _users fails', function () {
+      beforeEach(function() {
+        this.callback( 'ooops' )
+      });
+      it('should handle the error', function () {
+        expect(this.pwReset.worker.handleError).wasCalledWith('ooops')
+      });
+    });
+  }); // #markDocAsFailed
 }); // PasswordReset
 
 
