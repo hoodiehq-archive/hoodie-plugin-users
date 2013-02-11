@@ -23,6 +23,7 @@ var worker = {
   },
   usersDatabase : couchMock.databaseApi,
   couch : couchMock,
-  handleError : getSpy('handleError')
+  handleError : getSpy('handleError'),
+  handleErrorWithMessage : getSpy('handleErrorWithMessage')
 };
 module.exports = worker;
