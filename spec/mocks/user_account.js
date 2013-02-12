@@ -1,3 +1,7 @@
+var WorkerMock = require('./worker.js')
+var when = require('when');
+var promisify = require('when-promisify');
+
 var spies = []
 var getSpy = function(name) {
   var spy = jasmine.createSpy(name)
@@ -13,7 +17,10 @@ afterEach(function() {
 var UserAccount = {
   on  : getSpy('on'),
   log : getSpy('log'),
-  properties : {}
+  properties : {},
+  worker : WorkerMock,
+  when : when,
+  promisify : promisify
 };
 
 module.exports = UserAccount;

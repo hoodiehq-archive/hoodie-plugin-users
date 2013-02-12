@@ -46,6 +46,105 @@ describe('UsernameChange', function () {
       });
     });
   }); // #process()
+
+  describe('#createNewUsersDoc()', function () {
+    beforeEach(function() {
+      spyOn(this.usernameChange, "handleSaveSuccess");
+      spyOn(this.usernameChange, "handleSaveError").andReturn( when.reject() );
+      this.usernameChange.oldProperties = {
+        $newUsername : 'new username',
+        _rev : '123'
+      }
+      this.promise  = this.usernameChange.createNewUsersDoc()
+      this.save = this.usernameChange.account.worker.usersDatabase.save
+      this.savedId = this.save.mostRecentCall.args[0]
+      this.savedProperties = this.save.mostRecentCall.args[1]
+      this.callback = this.save.mostRecentCall.args[2]
+    });
+    it('should set new _id', function () {
+      expect(this.savedProperties._id).toEqual('org.couchdb.user:user/new username');
+    });
+    it('should set new name', function () {
+      expect(this.savedProperties.name).toEqual('user/new username');
+    });
+    it("should remove $newUsername property", function() {
+      expect(this.savedProperties.$newUsername).toBeUndefined();
+    });
+    it("should remove _rev property", function() {
+      expect(this.savedProperties._rev).toBeUndefined();
+    });
+    it("should save the new _users doc", function() {
+      expect(this.save).wasCalledWithArgs('org.couchdb.user:user/new username', {
+        _id : 'org.couchdb.user:user/new username',
+        name : 'user/new username'
+      });
+    });
+
+    describe('save succeeds', function () {
+      beforeEach(function() {
+        this.callback( null, 'w00t' )
+      });
+      it('should #handleSaveSuccess()', function (done) {
+        expect(this.usernameChange.handleSaveSuccess).wasCalledWith('w00t');
+      });
+      it("should resolve", function() {
+        expect(this.promise).toBeResolved();
+      });
+    });
+
+    describe('save fails', function () {
+      beforeEach(function() {
+        this.callback( 'oops' )
+      });
+      it('should #handleSaveError()', function (done) {
+        expect(this.usernameChange.handleSaveError).wasCalledWith('oops');
+      });
+      it("should reject", function() {
+        expect(this.promise).toBeRejected();
+      });
+    });
+  }); // #createNewUsersDoc()
+
+  describe('#removeOldUsersDoc()', function () {
+    beforeEach(function() {
+      spyOn(this.usernameChange, "handleRemoveOldUsersDocSuccess");
+      spyOn(this.usernameChange, "handleRemoveOldUsersDocError").andReturn( when.reject() );
+      this.usernameChange.oldProperties = {
+        _id : 'abc',
+        _rev : '123'
+      }
+      this.promise  = this.usernameChange.removeOldUsersDoc()
+      this.remove = this.usernameChange.account.worker.usersDatabase.remove
+      this.callback = this.remove.mostRecentCall.args[2]
+    });
+    it('should make the remove call', function (done) {
+      expect(this.remove).wasCalledWithArgs('abc', '123');
+    });
+
+    describe('save succeeds', function () {
+      beforeEach(function() {
+        this.callback( null, 'w00t' )
+      });
+      it('should #handleRemoveOldUsersDocSuccess()', function (done) {
+        expect(this.usernameChange.handleRemoveOldUsersDocSuccess).wasCalledWith('w00t');
+      });
+      it("should resolve", function() {
+        expect(this.promise).toBeResolved();
+      });
+    });
+
+    describe('save fails', function () {
+      beforeEach(function() {
+        this.callback( 'oops' )
+      });
+      it('should #handleRemoveOldUsersDocError()', function (done) {
+        expect(this.usernameChange.handleRemoveOldUsersDocError).wasCalledWith('oops');
+      });
+      it("should reject", function() {
+        expect(this.promise).toBeRejected();
+      });
+    });
+  }); // #removeOldUsersDoc()
 }); // UserAccount
 
 }, 100)
