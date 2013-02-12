@@ -2,9 +2,8 @@
     "name": "hoodie-worker-users",
     "version": "0.0.4",
     "dependencies": {
-        "cradle": "*",
         "hoodie-worker": "git://github.com/hoodiehq/hoodie-worker.git",
-        "nodemailer": "*",
+        "nodemailer": "~0.3",
         "clone": "*"
     },
     "main": "lib/worker.js",
