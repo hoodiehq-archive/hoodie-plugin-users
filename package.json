@@ -1,6 +1,6 @@
 {
     "name": "hoodie-worker-users",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "dependencies": {
         "cradle": "*",
         "hoodie-worker": "git://github.com/hoodiehq/hoodie-worker.git",
