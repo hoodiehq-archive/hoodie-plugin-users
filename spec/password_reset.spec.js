@@ -245,7 +245,7 @@ describe('PasswordReset', function () {
         cb( 'ooops')
       });
       it('should #handleUserNotFound()', function () {
-        expect(this.pwReset.handleUserNotFound).wasCalledWith('ooops');
+        expect(this.pwReset.handleUserNotFound).wasCalledWith( new Error('ooops') );
       });
     });
   }); // #checkIfUserExists()
@@ -310,7 +310,7 @@ describe('PasswordReset', function () {
         this.callback( 'ooops')
       });
       it('should reject', function () {
-        expect(this.promise).toBeRejectedWith('ooops')
+        expect(this.promise).toBeRejectedWith( new Error('ooops') )
       });
     });
   }); // #updateUserObject()
@@ -361,7 +361,7 @@ describe('PasswordReset', function () {
         this.callback( 'ooops')
       });
       it('should #handleSendEmailError()', function () {
-        expect(this.pwReset.handleSendEmailError).wasCalledWith('ooops')
+        expect(this.pwReset.handleSendEmailError).wasCalledWith( new Error('ooops') )
       });
     });
   }); // #sendNewPassword()
@@ -373,7 +373,7 @@ describe('PasswordReset', function () {
       this.promise  = this.pwReset.cleanupPasswordReset()
       this.callback = this.pwReset.worker.usersDatabase.remove.mostRecentCall.args[2];
     });
-    it('should remove password reset doc from _users', function (done) {
+    it('should remove password reset doc from _users', function () {
       var id  = "org.couchdb.user:$passwordReset/joe@example.com/hash";
       var rev = "1-8d7d6e48c73ef2b311fcdfcdd2a8bf11";
       expect(this.pwReset.worker.usersDatabase.remove).wasCalledWithArgs(id, rev);
@@ -399,7 +399,7 @@ describe('PasswordReset', function () {
         this.callback( 'ooops' )
       });
       it('should reject', function () {
-        expect(this.promise).toBeRejectedWith('ooops')
+        expect(this.promise).toBeRejectedWith( new Error('ooops') )
       });
     });
   });
@@ -409,10 +409,10 @@ describe('PasswordReset', function () {
       this.pwReset.markDocAsFailed( 'banana' )
       this.callback = this.pwReset.worker.usersDatabase.save.mostRecentCall.args[3]
     });
-    it('should add $error to properties', function (done) {
+    it('should add $error to properties', function () {
       expect(this.pwReset.properties.$error).toEqual('banana');
     });
-    it('should update the document in _users', function (done) {
+    it('should update the document in _users', function () {
       var id  = "org.couchdb.user:$passwordReset/joe@example.com/hash";
       var rev = "1-8d7d6e48c73ef2b311fcdfcdd2a8bf11";
       var doc = this.passwordResetDoc
@@ -431,7 +431,7 @@ describe('PasswordReset', function () {
         this.callback( 'ooops' )
       });
       it('should handle the error', function () {
-        expect(this.pwReset.worker.handleError).wasCalledWith('ooops')
+        expect(this.pwReset.worker.handleError).wasCalledWith( 'ooops' )
       });
     });
   }); // #markDocAsFailed

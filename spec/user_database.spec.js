@@ -121,7 +121,7 @@ describe('UserDatabase', function () {
       spyOn(global, "setTimeout").andCallFake( function( cb ) { cb() });
       this.database.drop()
     });
-    it('should wait 3sec', function (done) {
+    it('should wait 3sec', function () {
       expect(global.setTimeout.callCount).toBe( 1 );
       var timeout = global.setTimeout.mostRecentCall.args[1]
       expect(timeout).toEqual( 3000 );

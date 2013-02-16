@@ -89,7 +89,7 @@ describe('UserAccount', function () {
   }); // #listenUp(properties)
 
   describe('#handleChange( change )', function () {
-    it('should set properties from change.doc', function (done) {
+    it('should set properties from change.doc', function () {
       this.account.handleChange( { doc : 'doc' } )
       expect(this.account.setProperties).wasCalledWith('doc');
     });
@@ -183,7 +183,7 @@ describe('UserAccount', function () {
       beforeEach(function() {
         this.callback(null, 'woot')
       });
-      it('should #handleSaveSuccess()', function (done) {
+      it('should #handleSaveSuccess()', function () {
         expect(this.account.handleSaveSuccess).wasCalledWith('woot');
       });
       it("should return a resolved promise", function() {

@@ -1,5 +1,4 @@
 require('./spec_helper.js');
-
 var when = require("when");
 
 var UserAccountMock = {
@@ -68,13 +67,13 @@ describe("Worker", function() {
     it("should start listening to changes", function() {
       expect(this.worker.usersDatabase.changes).wasCalledWith({include_docs:true});
     });
-    it("should handle changes", function(done) {
+    it("should handle changes", function() {
       var args = couchMock.changesApi.on.calls[0].args
       expect(args[0]).toEqual('change');
       args[1]('change')
       expect(this.worker.handleChange).wasCalledWith('change');
     });
-    it("should handle errors", function(done) {
+    it("should handle errors", function() {
       var args = couchMock.changesApi.on.calls[1].args
       expect(args[0]).toEqual('error');
       args[1]('error')

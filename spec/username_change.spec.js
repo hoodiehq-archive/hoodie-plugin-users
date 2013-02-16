@@ -41,7 +41,7 @@ describe('UsernameChange', function () {
       beforeEach(function() {
         this.createNewUsersDocDefer.resolve()
       });
-      it('should #removeOldUsersDoc', function (done) {
+      it('should #removeOldUsersDoc', function () {
         expect(this.usernameChange.removeOldUsersDoc).wasCalled();
       });
     });
@@ -84,7 +84,7 @@ describe('UsernameChange', function () {
       beforeEach(function() {
         this.callback( null, 'w00t' )
       });
-      it('should #handleSaveSuccess()', function (done) {
+      it('should #handleSaveSuccess()', function () {
         expect(this.usernameChange.handleSaveSuccess).wasCalledWith('w00t');
       });
       it("should resolve", function() {
@@ -96,7 +96,7 @@ describe('UsernameChange', function () {
       beforeEach(function() {
         this.callback( 'oops' )
       });
-      it('should #handleSaveError()', function (done) {
+      it('should #handleSaveError()', function () {
         expect(this.usernameChange.handleSaveError).wasCalledWith('oops');
       });
       it("should reject", function() {
@@ -117,7 +117,7 @@ describe('UsernameChange', function () {
       this.remove = this.usernameChange.account.worker.usersDatabase.remove
       this.callback = this.remove.mostRecentCall.args[2]
     });
-    it('should make the remove call', function (done) {
+    it('should make the remove call', function () {
       expect(this.remove).wasCalledWithArgs('abc', '123');
     });
 
@@ -125,7 +125,7 @@ describe('UsernameChange', function () {
       beforeEach(function() {
         this.callback( null, 'w00t' )
       });
-      it('should #handleRemoveOldUsersDocSuccess()', function (done) {
+      it('should #handleRemoveOldUsersDocSuccess()', function () {
         expect(this.usernameChange.handleRemoveOldUsersDocSuccess).wasCalledWith('w00t');
       });
       it("should resolve", function() {
@@ -137,7 +137,7 @@ describe('UsernameChange', function () {
       beforeEach(function() {
         this.callback( 'oops' )
       });
-      it('should #handleRemoveOldUsersDocError()', function (done) {
+      it('should #handleRemoveOldUsersDocError()', function () {
         expect(this.usernameChange.handleRemoveOldUsersDocError).wasCalledWith('oops');
       });
       it("should reject", function() {
