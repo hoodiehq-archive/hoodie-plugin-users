@@ -196,7 +196,7 @@ describe('UserAccount', function () {
         this.callback('ooops')
       });
       it("should return a rejected promise", function() {
-        expect(this.promise).toBeRejectedWith('ooops');
+        expect(this.promise).toBeRejectedWith( { message : 'ooops' } );
       });
     });
   }); // '#save()
