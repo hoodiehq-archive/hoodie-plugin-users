@@ -10,7 +10,7 @@
     "devDependencies": {
         "jasmine-node": "*",
         "when": "~1.7",
-        "when-promisify": "*"
+        "when-promisify": "git://github.com/gr2m/when-promisify.git"
     },
     "scripts": {
         "test": "jasmine-node spec",
