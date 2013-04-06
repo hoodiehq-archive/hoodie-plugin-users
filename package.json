@@ -1,6 +1,6 @@
 {
     "name": "hoodie-worker-users",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "dependencies": {
         "hoodie-worker": "git://github.com/hoodiehq/hoodie-worker.git",
         "nodemailer": "~0.3",
