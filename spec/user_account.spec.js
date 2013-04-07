@@ -32,7 +32,9 @@ describe('UserAccount', function () {
       expect(this.account.worker).toBe(WorkerMock);
     });
     it('should set database', function () {
-      expect(UserDatabaseSpy).wasCalledWith('database', this.account, WorkerMock.couch);
+      UserAccount.prototype.setProperties.andCallThrough();
+      this.account = new UserAccount(this.properties, WorkerMock)
+      expect(UserDatabaseSpy).wasCalledWith('database', this.account, WorkerMock);
       expect(this.account.database).toBe(UserDatabaseMock);
     });
     it("should set hash", function() {
@@ -55,7 +57,7 @@ describe('UserAccount', function () {
       expect(this.account.properties).toEqual(this.properties);
     });
     it('should set name', function () {
-      expect(this.account.name).toEqual( 'name' );
+      expect(this.account.name).toEqual( 'database' );
     });
   }); // #setProperties(properties)
 
