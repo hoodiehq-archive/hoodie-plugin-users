@@ -171,7 +171,8 @@ class Users.UsersView extends Users.BaseView
     userList = document.getElementById('userList')
     if userList
       @sort = new Tablesort(userList);
-      # sort by previous sorting parameters. Bit hacky, because tablesort has no api for this
+      # sort by previous sorting parameters.
+      # Bit hacky, because tablesort has no api for this
       sortHeader = $('#userList [data-sort-by="'+@sortBy+'"]')
       sortHeader.click()
       if @sortDirection is 'sort-up'
