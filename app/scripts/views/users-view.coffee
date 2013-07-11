@@ -1,4 +1,4 @@
-class Pocket.UsersView extends Pocket.BaseView
+class Users.UsersView extends Users.BaseView
   template: 'users'
   sort: undefined
   sortBy: undefined
@@ -174,7 +174,7 @@ class Pocket.UsersView extends Pocket.BaseView
         sortHeader.click()
     # Deal with all conditional form elements once after rendering the form
     @$el.find('.formCondition').each (index, el) ->
-      pocket.handleConditionalFormElements(el, 0)
+      users.handleConditionalFormElements(el, 0)
 
     super
 

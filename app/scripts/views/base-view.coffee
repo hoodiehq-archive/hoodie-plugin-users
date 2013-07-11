@@ -1,11 +1,11 @@
-class Pocket.BaseView extends Backbone.Layout # Backbone.View
+class Users.BaseView extends Backbone.Layout # Backbone.View
 
   # by default, pass entire view to template
   serialize: -> this
 
   #
   beforeRender: ->
-    #@appInfo = pocket.appInfo
+    #@appInfo = users.appInfo
     @appInfo = {name: "TEST"}
 
   #

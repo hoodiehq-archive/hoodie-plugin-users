@@ -1,10 +1,10 @@
-class Pocket.ApplicationView extends Pocket.BaseView
+class Users.ApplicationView extends Users.BaseView
 
   events:
     "click a"       : "handleLinks"
 
   views:
-    "body" : new Pocket.UsersView
+    "body" : new Users.UsersView
 
   initialize: ->
     super
@@ -18,5 +18,5 @@ class Pocket.ApplicationView extends Pocket.BaseView
     if /\.pdf$/.test path
       return true
     if /^\/[^\/]/.test(path)
-      pocket.router.navigate path.substr(1), true
+      users.router.navigate path.substr(1), true
       return false

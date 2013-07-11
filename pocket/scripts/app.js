@@ -4,6 +4,7 @@
   if (location.hostname === 'localhost' && location.port === "9000") {
     whereTheMagicHappens = "http://pocket.dev/_api";
     whereTheMagicHappens = "http://127.0.0.1:6022/_api";
+    whereTheMagicHappens = "http://127.0.0.1:6014/_api";
   } else {
     whereTheMagicHappens = void 0;
   }
@@ -154,7 +155,7 @@
       });
       Handlebars.registerHelper('linkToFutonUser', function(userName) {
         var couchUrl;
-        couchUrl = hoodieAdmin.baseUrl.replace('http://', 'http://couch.').replace('_api', '_utils');
+        couchUrl = hoodieAdmin.baseUrl.replace('_api', '_utils');
         return couchUrl + '/document.html?_users/org.couchdb.user:' + userName;
       });
       Handlebars.registerHelper("debug", function(optionalValue) {
@@ -224,7 +225,9 @@
     };
 
     BaseView.prototype.beforeRender = function() {
-      return this.appInfo = pocket.appInfo;
+      return this.appInfo = {
+        name: "TEST"
+      };
     };
 
     BaseView.prototype.afterRender = function() {
@@ -245,137 +248,15 @@
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Pocket.UsersView = (function(_super) {
 
     __extends(UsersView, _super);
 
     function UsersView() {
-      return UsersView.__super__.constructor.apply(this, arguments);
-    }
-
-    UsersView.prototype.template = 'users';
-
-    return UsersView;
-
-  })(Pocket.BaseView);
-
-  Pocket.UsersView.Router = (function(_super) {
-
-    __extends(Router, _super);
-
-    Router.prototype.routes = {
-      "": "default",
-      "user/:id": "editUser"
-    };
-
-    function Router() {
-      this.view = new Pocket.ModulesView['module-users'];
-      pocket.app.views.body.setView(".main", this.view);
-      Router.__super__.constructor.apply(this, arguments);
-    }
-
-    Router.prototype["default"] = function() {
-      return this.view.update();
-    };
-
-    Router.prototype.editUser = function(id) {
-      return this.view.editUser(id);
-    };
-
-    return Router;
-
-  })(Backbone.SubRoute);
-
-  Pocket.ModulesBaseView = (function(_super) {
-
-    __extends(ModulesBaseView, _super);
-
-    function ModulesBaseView() {
-      return ModulesBaseView.__super__.constructor.apply(this, arguments);
-    }
-
-    ModulesBaseView.prototype.afterRender = function() {
-      this.$el.find('.formCondition').each(function(index, el) {
-        return pocket.handleConditionalFormElements(el, 0);
-      });
-      return ModulesBaseView.__super__.afterRender.apply(this, arguments);
-    };
-
-    return ModulesBaseView;
-
-  })(Pocket.BaseView);
-
-  Pocket.ModulesView = (function(_super) {
-
-    __extends(ModulesView, _super);
-
-    function ModulesView() {
-      this.beforeRender = __bind(this.beforeRender, this);
-      return ModulesView.__super__.constructor.apply(this, arguments);
-    }
-
-    ModulesView.prototype.template = 'module';
-
-    ModulesView.prototype.beforeRender = function() {
-      var view;
-      this.module.url = this.module.id.replace('worker-', '');
-      this.module.cleanName = this.makeURLHuman(this.module.url);
-      this.appInfo = pocket.appInfo;
-      if (this.getView(".module-content")) {
-        this.removeView(".module-content");
-      }
-      if (this.moduleViewExists(this.module.id)) {
-        view = this.getModuleView(this.module.id);
-        this.setView(".module-content", view);
-        return typeof view.update === "function" ? view.update() : void 0;
-      }
-    };
-
-    ModulesView.prototype.moduleViewExists = function(name) {
-      return Pocket.ModulesView["module-" + name] != null;
-    };
-
-    ModulesView.prototype._cachedViews = {};
-
-    ModulesView.prototype.getModuleView = function(name) {
-      if (!this._cachedViews[name]) {
-        this._cachedViews[name] = new Pocket.ModulesView["module-" + this.module.id];
-      }
-      return this._cachedViews[name];
-    };
-
-    return ModulesView;
-
-  })(Pocket.BaseView);
-
-  Pocket.ModulesView['module-users'] = (function(_super) {
-
-    __extends(_Class, _super);
-
-    _Class.prototype.template = 'users';
-
-    _Class.prototype.sort = void 0;
-
-    _Class.prototype.sortBy = void 0;
-
-    _Class.prototype.sortDirection = void 0;
-
-    _Class.prototype.events = {
-      'submit form.config': 'updateConfig',
-      'submit form.form-search': 'search',
-      'submit form.updatePassword': 'updatePassword',
-      'submit form.updateUsername': 'updateUsername',
-      'click .addUser button[type="submit"]': 'addUser',
-      'click .user a.removeUserPrompt': 'removeUserPrompt',
-      'click #confirmUserRemoveModal .removeUser': 'removeUser',
-      'click .clearSearch': 'clearSearch'
-    };
-
-    function _Class() {
       this._updateModule = __bind(this._updateModule, this);
 
       this.afterRender = __bind(this.afterRender, this);
@@ -387,18 +268,41 @@
       this.removeUserPrompt = __bind(this.removeUserPrompt, this);
 
       this.update = __bind(this.update, this);
-      this.update();
-      _Class.__super__.constructor.apply(this, arguments);
+      return UsersView.__super__.constructor.apply(this, arguments);
     }
 
-    _Class.prototype.update = function() {
+    UsersView.prototype.template = 'users';
+
+    UsersView.prototype.sort = void 0;
+
+    UsersView.prototype.sortBy = void 0;
+
+    UsersView.prototype.sortDirection = void 0;
+
+    UsersView.prototype.events = {
+      'submit form.config': 'updateConfig',
+      'submit form.form-search': 'search',
+      'submit form.updatePassword': 'updatePassword',
+      'submit form.updateUsername': 'updateUsername',
+      'click .addUser button[type="submit"]': 'addUser',
+      'click .user a.removeUserPrompt': 'removeUserPrompt',
+      'click #confirmUserRemoveModal .removeUser': 'removeUser',
+      'click .clearSearch': 'clearSearch'
+    };
+
+    UsersView.prototype.update = function() {
       var _this = this;
-      return $.when(hoodieAdmin.users.findAll(), hoodieAdmin.modules.find('users'), hoodieAdmin.config.get()).then(function(users, object, appConfig) {
+      return $.when(hoodieAdmin.users.findAll()).then(function(users, object, appConfig) {
         var _base;
+        if (object == null) {
+          object = {};
+        }
+        if (appConfig == null) {
+          appConfig = {};
+        }
         _this.totalUsers = users.length;
         _this.users = users;
         _this.config = $.extend(_this._configDefaults(), object.config);
-        _this.appConfig = appConfig;
         _this.editableUser = null;
         switch (users.length) {
           case 0:
@@ -415,18 +319,18 @@
       });
     };
 
-    _Class.prototype.updateConfig = function(event) {
+    UsersView.prototype.updateConfig = function(event) {
       event.preventDefault();
       return hoodieAdmin.modules.update('module', 'users', this._updateModule);
     };
 
-    _Class.prototype.emailTransportNotConfigured = function() {
+    UsersView.prototype.emailTransportNotConfigured = function() {
       var isConfigured, _ref, _ref1;
       isConfigured = ((_ref = this.appConfig) != null ? (_ref1 = _ref.email) != null ? _ref1.transport : void 0 : void 0) != null;
       return !isConfigured;
     };
 
-    _Class.prototype.addUser = function(event) {
+    UsersView.prototype.addUser = function(event) {
       var $btn, ownerHash, password, username;
       event.preventDefault();
       $btn = $(event.currentTarget);
@@ -458,7 +362,7 @@
       }
     };
 
-    _Class.prototype.removeUserPrompt = function(event) {
+    UsersView.prototype.removeUserPrompt = function(event) {
       var id, type;
       event.preventDefault();
       id = $(event.currentTarget).closest("[data-id]").data('id');
@@ -469,7 +373,7 @@
       }).find('.modal-body').text('Really remove the user ' + id + '? This cannot be undone!').end().find('.modal-title').text('Remove user ' + id).end();
     };
 
-    _Class.prototype.removeUser = function(event) {
+    UsersView.prototype.removeUser = function(event) {
       var id, type,
         _this = this;
       event.preventDefault();
@@ -482,7 +386,7 @@
       });
     };
 
-    _Class.prototype.editUser = function(id) {
+    UsersView.prototype.editUser = function(id) {
       var _this = this;
       return $.when(hoodieAdmin.users.find('user', id)).then(function(user) {
         _this.editableUser = user;
@@ -490,7 +394,7 @@
       });
     };
 
-    _Class.prototype.updateUsername = function(event) {
+    UsersView.prototype.updateUsername = function(event) {
       var $btn, $form, id;
       event.preventDefault();
       id = $(event.currentTarget).closest('form').data('id');
@@ -498,7 +402,7 @@
       return $btn = $form.find('[type="submit"]');
     };
 
-    _Class.prototype.updatePassword = function(event) {
+    UsersView.prototype.updatePassword = function(event) {
       var $btn, $form, id, password;
       event.preventDefault();
       id = $(event.currentTarget).closest('form').data('id');
@@ -522,7 +426,7 @@
       }
     };
 
-    _Class.prototype.search = function(event) {
+    UsersView.prototype.search = function(event) {
       var _this = this;
       event.preventDefault();
       this.searchQuery = $('input.search-query', event.currentTarget).val();
@@ -542,13 +446,13 @@
       });
     };
 
-    _Class.prototype.clearSearch = function(event) {
+    UsersView.prototype.clearSearch = function(event) {
       event.preventDefault();
       this.searchQuery = null;
       return this.update();
     };
 
-    _Class.prototype.beforeRender = function() {
+    UsersView.prototype.beforeRender = function() {
       this.sortBy = $('#userList .sort-up, #userList .sort-down').data('sort-by');
       if (this.sortBy) {
         this.sortDirection = 'sort-down';
@@ -559,10 +463,10 @@
         this.sortBy = "signupDate";
         this.sortDirection = "sort-up";
       }
-      return _Class.__super__.beforeRender.apply(this, arguments);
+      return UsersView.__super__.beforeRender.apply(this, arguments);
     };
 
-    _Class.prototype.afterRender = function() {
+    UsersView.prototype.afterRender = function() {
       var sortHeader, userList;
       userList = document.getElementById('userList');
       if (userList) {
@@ -573,10 +477,13 @@
           sortHeader.click();
         }
       }
-      return _Class.__super__.afterRender.apply(this, arguments);
+      this.$el.find('.formCondition').each(function(index, el) {
+        return pocket.handleConditionalFormElements(el, 0);
+      });
+      return UsersView.__super__.afterRender.apply(this, arguments);
     };
 
-    _Class.prototype._updateModule = function(module) {
+    UsersView.prototype._updateModule = function(module) {
       module.config.confirmationMandatory = this.$el.find('[name=confirmationMandatory]').is(':checked');
       module.config.confirmationEmailFrom = this.$el.find('[name=confirmationEmailFrom]').val();
       module.config.confirmationEmailSubject = this.$el.find('[name=confirmationEmailSubject]').val();
@@ -584,11 +491,11 @@
       return module;
     };
 
-    _Class.prototype._configDefaults = function() {};
+    UsersView.prototype._configDefaults = function() {};
 
-    return _Class;
+    return UsersView;
 
-  })(Pocket.ModulesBaseView);
+  })(Pocket.BaseView);
 
 }).call(this);
 
@@ -609,13 +516,14 @@
     };
 
     ApplicationView.prototype.views = {
-      "body": new Pocket.ModulesView['module-users']
+      "body": new Pocket.UsersView
     };
 
     ApplicationView.prototype.initialize = function() {
       ApplicationView.__super__.initialize.apply(this, arguments);
       this.setElement($('html'));
-      return this.render();
+      this.render();
+      return this.views.body.update();
     };
 
     ApplicationView.prototype.handleLinks = function(event) {
@@ -649,35 +557,16 @@
     }
 
     Router.prototype.routes = {
-      "*subroute": "modules"
+      "": "default",
+      "user/:id": "editUser"
     };
 
-    Router.prototype.modules = function(subroute) {
-      var moduleName,
-        _this = this;
-      moduleName = 'users';
-      console.log("modules: ", moduleName, subroute);
-      if (!Pocket.Routers) {
-        Pocket.Routers = {};
-      }
-      return window.hoodieAdmin.modules.find(moduleName).then(function(module) {
-        var moduleViewName, view, _ref;
-        moduleViewName = _this.capitaliseFirstLetter(moduleName) + "View";
-        if (!Pocket.Routers[moduleViewName] && ((_ref = Pocket[moduleViewName]) != null ? _ref.Router : void 0)) {
-          return Pocket.Routers[moduleViewName] = new Pocket[moduleViewName].Router('modules/' + moduleName, {
-            createTrailingSlashRoutes: true
-          });
-        } else {
-          view = new Pocket.ModulesView;
-          pocket.app.views.body.setView(".main", view);
-          view.module = module;
-          return view.render();
-        }
-      });
+    Router.prototype["default"] = function() {
+      return pocket.app.views.body.update();
     };
 
-    Router.prototype.capitaliseFirstLetter = function(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
+    Router.prototype.editUser = function(id) {
+      return pocket.app.views.body.editUser(id);
     };
 
     return Router;

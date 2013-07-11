@@ -1,15 +1,15 @@
-class window.Pocket extends Backbone.Events
+class window.Users extends Backbone.Events
 
   # this is the entry point of your application.
   constructor: ->
-    window.pocket = this
+    window.users = this
 
     @setElement('html')
     @registerHandlebarsHelpers()
     @registerListeners()
 
-    @router = new Pocket.Router
-    @app    = new Pocket.ApplicationView
+    @router = new Users.Router
+    @app    = new Users.ApplicationView
 
     Backbone.history.start()
     @app.render()
@@ -92,13 +92,13 @@ class window.Pocket extends Backbone.Events
 
     # Generates a generic default reply-to address for the app
     Handlebars.registerHelper 'defaultReplyMailAddress', () ->
-      if !pocket.appInfo.name
+      if !users.appInfo.name
         return "please-reply@your-app.com"
-      if pocket.appInfo.name.indexOf(".") is -1
-        return "please-reply@"+pocket.appInfo.name+".com"
+      if users.appInfo.name.indexOf(".") is -1
+        return "please-reply@"+users.appInfo.name+".com"
       else
-        return "please-reply@"+pocket.appInfo.name
-      return pocket.appInfo.defaultReplyEmailAddress
+        return "please-reply@"+users.appInfo.name
+      return users.appInfo.defaultReplyEmailAddress
 
     # Generates the Futon URL for a given username
     Handlebars.registerHelper 'linkToFutonUser', (userName) ->
@@ -143,4 +143,4 @@ class window.Pocket extends Backbone.Events
 
   setAppInfo: (info) =>
     console.log 'info', info
-    pocket.appInfo = info
+    users.appInfo = info

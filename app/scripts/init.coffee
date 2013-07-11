@@ -1,7 +1,7 @@
 if (location.hostname is 'localhost' and location.port is "9000")
   # debug mode, connect to
   # some existing hoodie app.
-  whereTheMagicHappens = "http://pocket.dev/_api"
+  whereTheMagicHappens = "http://users.dev/_api"
   whereTheMagicHappens = "http://127.0.0.1:6022/_api"
   whereTheMagicHappens = "http://127.0.0.1:6014/_api"
 else
@@ -22,4 +22,4 @@ Backbone.Layout.configure
 
 # init when page loaded
 jQuery(document).ready ->
-  new Pocket
+  new Users
