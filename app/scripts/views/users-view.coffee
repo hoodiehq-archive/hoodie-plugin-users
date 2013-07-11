@@ -1,61 +1,5 @@
 class Pocket.UsersView extends Pocket.BaseView
   template: 'users'
-
-class Pocket.UsersView.Router extends Backbone.SubRoute
-  routes:
-    ""              : "default"
-    "user/:id"      : "editUser"
-
-  constructor: ->
-    @view = new Pocket.ModulesView['module-users']
-    pocket.app.views.body.setView(".main", @view)
-    super
-
-  default: ->
-    @view.update()
-
-  editUser: (id) ->
-    @view.editUser(id)
-
-class Pocket.ModulesBaseView extends Pocket.BaseView
-
-  afterRender: ->
-    # Deal with all conditional form elements once after rendering the form
-    @$el.find('.formCondition').each (index, el) ->
-      pocket.handleConditionalFormElements(el, 0)
-
-    super
-
-class Pocket.ModulesView extends Pocket.BaseView
-  template: 'module'
-
-  beforeRender: () =>
-    @module.url = @module.id.replace('worker-', '')
-    @module.cleanName = @makeURLHuman @module.url
-    @appInfo = pocket.appInfo
-
-    @removeView(".module-content") if @getView(".module-content")
-
-    if @moduleViewExists @module.id
-      view = @getModuleView @module.id
-      @setView(".module-content", view)
-      view.update?()
-
-  moduleViewExists : (name) ->
-    Pocket.ModulesView["module-#{name}"]?
-
-  _cachedViews : {}
-  getModuleView : (name) ->
-    unless @_cachedViews[name]
-      @_cachedViews[name] = new Pocket.ModulesView["module-#{@module.id}"]
-
-    return @_cachedViews[name]
-
-
-
-
-class Pocket.ModulesView['module-users'] extends Pocket.ModulesBaseView
-  template: 'users'
   sort: undefined
   sortBy: undefined
   sortDirection: undefined
@@ -70,20 +14,15 @@ class Pocket.ModulesView['module-users'] extends Pocket.ModulesBaseView
     'click #confirmUserRemoveModal .removeUser'   : 'removeUser'
     'click .clearSearch'                          : 'clearSearch'
 
-  constructor : ->
-    @update()
-    super
-
   update : =>
     $.when(
-      hoodieAdmin.users.findAll(),
-      hoodieAdmin.modules.find('users'),
-      hoodieAdmin.config.get()
-    ).then (users, object, appConfig) =>
+      hoodieAdmin.users.findAll()
+      # hoodieAdmin.modules.find('users'),
+      #hoodieAdmin.config.get()
+    ).then (users, object = {}, appConfig = {}) =>
       @totalUsers   = users.length
       @users        = users
       @config       = $.extend @_configDefaults(), object.config
-      @appConfig    = appConfig
       @editableUser = null
       switch users.length
         when 0
@@ -233,6 +172,10 @@ class Pocket.ModulesView['module-users'] extends Pocket.ModulesBaseView
       sortHeader.click()
       if @sortDirection is 'sort-up'
         sortHeader.click()
+    # Deal with all conditional form elements once after rendering the form
+    @$el.find('.formCondition').each (index, el) ->
+      pocket.handleConditionalFormElements(el, 0)
+
     super
 
   _updateModule : (module) =>

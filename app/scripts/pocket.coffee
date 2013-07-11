@@ -102,7 +102,7 @@ class window.Pocket extends Backbone.Events
 
     # Generates the Futon URL for a given username
     Handlebars.registerHelper 'linkToFutonUser', (userName) ->
-      couchUrl = hoodieAdmin.baseUrl.replace('http://', 'http://couch.').replace('_api', '_utils')
+      couchUrl = hoodieAdmin.baseUrl.replace('_api', '_utils')
       return couchUrl + '/document.html?_users/org.couchdb.user:' + userName
 
     Handlebars.registerHelper "debug", (optionalValue) ->

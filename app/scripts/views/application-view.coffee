@@ -4,13 +4,14 @@ class Pocket.ApplicationView extends Pocket.BaseView
     "click a"       : "handleLinks"
 
   views:
-    "body" : new Pocket.ModulesView['module-users']
+    "body" : new Pocket.UsersView
 
   initialize: ->
     super
 
     @setElement( $('html') )
     @render()
+    @views.body.update()
 
   handleLinks: (event) ->
     path = $(event.target).attr 'href'

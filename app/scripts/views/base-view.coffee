@@ -5,7 +5,8 @@ class Pocket.BaseView extends Backbone.Layout # Backbone.View
 
   #
   beforeRender: ->
-    @appInfo = pocket.appInfo
+    #@appInfo = pocket.appInfo
+    @appInfo = {name: "TEST"}
 
   #
   afterRender: ->

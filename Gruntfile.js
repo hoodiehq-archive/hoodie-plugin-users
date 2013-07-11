@@ -15,7 +15,7 @@ module.exports = function( grunt ) {
   var yeomanConfig = {
       app:  'app',
       temp: '.tmp',
-      dist: 'dist'
+      dist: 'pocket'
   };
 
   //
@@ -40,14 +40,14 @@ module.exports = function( grunt ) {
     useminPrepare: {
         html: 'app/index.html',
         options: {
-            dest: 'dist'
+            dest: '<%= yeoman.dist %>'
         }
     },
     usemin: {
-        html: ['dist/index.html'],
-        css: ['dist/styles/**/*.css'],
+        html: ['<%= yeoman.dist %>/index.html'],
+        css: ['<%= yeoman.dist %>/styles/**/*.css'],
         options: {
-            dirs: ['dist']
+            dirs: ['<%= yeoman.dist %>']
         }
     },
     imagemin: {
@@ -56,14 +56,14 @@ module.exports = function( grunt ) {
                 expand: true,
                 cwd: 'app/images',
                 src: '**/*.{png,jpg,jpeg}',
-                dest: 'dist/images'
+                dest: '<%= yeoman.dist %>/images'
             }]
         }
     },
     cssmin: {
         dist: {
             files: {
-                'dist/styles/app.css': [
+                '<%= yeoman.dist %>/styles/app.css': [
                     '.tmp/styles/**/*.css',
                     'app/styles/**/*.css'
                 ]
@@ -87,7 +87,7 @@ module.exports = function( grunt ) {
                 expand: true,
                 cwd: 'app',
                 src: '*.html',
-                dest: 'dist'
+                dest: '<%= yeoman.dist %>'
             }]
         }
     },
@@ -97,7 +97,7 @@ module.exports = function( grunt ) {
                 expand: true,
                 dot: true,
                 cwd: 'app',
-                dest: 'dist',
+                dest: '<%= yeoman.dist %>',
                 src: [
                     '*.{ico,txt}',
                     '.htaccess'
@@ -210,7 +210,7 @@ module.exports = function( grunt ) {
             options: {
                 middleware: function (connect) {
                     return [
-                        mountFolder(connect, 'dist')
+                        mountFolder(connect, '<%= yeoman.dist %>')
                     ];
                 }
             }
@@ -223,7 +223,7 @@ module.exports = function( grunt ) {
         }
     },
     clean: {
-        dist: ['.tmp', 'dist/*'],
+        dist: ['.tmp', '<%= yeoman.dist %>/*'],
         server: '.tmp'
     },
 
@@ -235,7 +235,7 @@ module.exports = function( grunt ) {
     uglify: {
         dist: {
             files: {
-                'dist/scripts/app.js': [
+                '<%= yeoman.dist %>/scripts/app.js': [
                     '.tmp/scripts/**/*.js'
                 ],
             }
@@ -279,7 +279,7 @@ module.exports = function( grunt ) {
     // the staging directory used during the process
     staging: '.tmp',
     // final build output
-    output: 'dist',
+    output: '<%= yeoman.dist %>',
 
     mkdirs: {
       staging: 'app/'
