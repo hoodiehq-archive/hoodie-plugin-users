@@ -2,7 +2,7 @@
   var whereTheMagicHappens;
 
   if (location.hostname === 'localhost' && location.port === "9000") {
-    whereTheMagicHappens = "http://pocket.dev/_api";
+    whereTheMagicHappens = "http://users.dev/_api";
     whereTheMagicHappens = "http://127.0.0.1:6022/_api";
     whereTheMagicHappens = "http://127.0.0.1:6014/_api";
   } else {
@@ -19,7 +19,7 @@
   });
 
   jQuery(document).ready(function() {
-    return new Pocket;
+    return new Users;
   });
 
 }).call(this);
@@ -29,54 +29,29 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  window.Pocket = (function(_super) {
+  window.Users = (function(_super) {
 
-    __extends(Pocket, _super);
+    __extends(Users, _super);
 
-    function Pocket() {
+    function Users() {
       this.setAppInfo = __bind(this.setAppInfo, this);
 
       this.loadAppInfo = __bind(this.loadAppInfo, this);
-
-      this.onSignOutSuccess = __bind(this.onSignOutSuccess, this);
-
-      this.onSignOutFail = __bind(this.onSignOutFail, this);
-
-      this.handleAuthenticateError = __bind(this.handleAuthenticateError, this);
-
-      this.handleAuthenticateSuccess = __bind(this.handleAuthenticateSuccess, this);
-
-      this.authenticate = __bind(this.authenticate, this);
-      window.pocket = this;
+      window.users = this;
       this.setElement('html');
       this.registerHandlebarsHelpers();
       this.registerListeners();
-      this.router = new Pocket.Router;
-      this.app = new Pocket.ApplicationView;
+      this.router = new Users.Router;
+      this.app = new Users.ApplicationView;
       Backbone.history.start();
       this.app.render();
     }
 
-    Pocket.prototype.setElement = function(selector) {
+    Users.prototype.setElement = function(selector) {
       return this.$el = $(selector);
     };
 
-    Pocket.prototype.authenticate = function() {
-      return hoodieAdmin.authenticate().then(this.handleAuthenticateSuccess, this.handleAuthenticateError);
-    };
-
-    Pocket.prototype.handleAuthenticateSuccess = function() {
-      this.isAuthenticated = true;
-      this.$el.addClass('authenticated');
-      return hoodieAdmin.resolveWith(this.isAuthenticated);
-    };
-
-    Pocket.prototype.handleAuthenticateError = function() {
-      this.isAuthenticated = false;
-      return hoodieAdmin.resolveWith(this.isAuthenticated);
-    };
-
-    Pocket.prototype.handleConditionalFormElements = function(el, speed) {
+    Users.prototype.handleConditionalFormElements = function(el, speed) {
       var condition, conditions, requirement, requirementMet, target, _i, _len, _results;
       if (speed == null) {
         speed = 250;
@@ -109,7 +84,7 @@
       return _results;
     };
 
-    Pocket.prototype.registerListeners = function() {
+    Users.prototype.registerListeners = function() {
       var _this = this;
       $("body").on("change", ".formCondition", function(event) {
         return _this.handleConditionalFormElements(event.target);
@@ -120,7 +95,7 @@
       });
     };
 
-    Pocket.prototype.registerHandlebarsHelpers = function() {
+    Users.prototype.registerHandlebarsHelpers = function() {
       Handlebars.registerHelper('testHelper', function(name, context) {
         return "HANDLEBARS TESTHELPER";
       });
@@ -143,15 +118,15 @@
         return "hey " + ISODate;
       });
       Handlebars.registerHelper('defaultReplyMailAddress', function() {
-        if (!pocket.appInfo.name) {
+        if (!users.appInfo.name) {
           return "please-reply@your-app.com";
         }
-        if (pocket.appInfo.name.indexOf(".") === -1) {
-          return "please-reply@" + pocket.appInfo.name + ".com";
+        if (users.appInfo.name.indexOf(".") === -1) {
+          return "please-reply@" + users.appInfo.name + ".com";
         } else {
-          return "please-reply@" + pocket.appInfo.name;
+          return "please-reply@" + users.appInfo.name;
         }
-        return pocket.appInfo.defaultReplyEmailAddress;
+        return users.appInfo.defaultReplyEmailAddress;
       });
       Handlebars.registerHelper('linkToFutonUser', function(userName) {
         var couchUrl;
@@ -185,24 +160,16 @@
       return null;
     };
 
-    Pocket.prototype.onSignOutFail = function() {
-      return console.log("Could not sign you out.");
-    };
-
-    Pocket.prototype.onSignOutSuccess = function() {
-      return window.location.reload();
-    };
-
-    Pocket.prototype.loadAppInfo = function() {
+    Users.prototype.loadAppInfo = function() {
       return hoodieAdmin.app.getInfo().pipe(this.setAppInfo);
     };
 
-    Pocket.prototype.setAppInfo = function(info) {
+    Users.prototype.setAppInfo = function(info) {
       console.log('info', info);
-      return pocket.appInfo = info;
+      return users.appInfo = info;
     };
 
-    return Pocket;
+    return Users;
 
   })(Backbone.Events);
 
@@ -212,7 +179,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Pocket.BaseView = (function(_super) {
+  Users.BaseView = (function(_super) {
 
     __extends(BaseView, _super);
 
@@ -252,7 +219,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Pocket.UsersView = (function(_super) {
+  Users.UsersView = (function(_super) {
 
     __extends(UsersView, _super);
 
@@ -430,6 +397,11 @@
       var _this = this;
       event.preventDefault();
       this.searchQuery = $('input.search-query', event.currentTarget).val();
+      if (!this.searchQuery) {
+        this.resultsDesc = "Please enter a search term first";
+        this.render();
+        return;
+      }
       return $.when(hoodieAdmin.users.search(this.searchQuery)).then(function(users) {
         _this.users = users;
         switch (users.length) {
@@ -478,7 +450,7 @@
         }
       }
       this.$el.find('.formCondition').each(function(index, el) {
-        return pocket.handleConditionalFormElements(el, 0);
+        return users.handleConditionalFormElements(el, 0);
       });
       return UsersView.__super__.afterRender.apply(this, arguments);
     };
@@ -495,7 +467,7 @@
 
     return UsersView;
 
-  })(Pocket.BaseView);
+  })(Users.BaseView);
 
 }).call(this);
 
@@ -503,7 +475,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Pocket.ApplicationView = (function(_super) {
+  Users.ApplicationView = (function(_super) {
 
     __extends(ApplicationView, _super);
 
@@ -516,7 +488,7 @@
     };
 
     ApplicationView.prototype.views = {
-      "body": new Pocket.UsersView
+      "body": new Users.UsersView
     };
 
     ApplicationView.prototype.initialize = function() {
@@ -533,14 +505,14 @@
         return true;
       }
       if (/^\/[^\/]/.test(path)) {
-        pocket.router.navigate(path.substr(1), true);
+        users.router.navigate(path.substr(1), true);
         return false;
       }
     };
 
     return ApplicationView;
 
-  })(Pocket.BaseView);
+  })(Users.BaseView);
 
 }).call(this);
 
@@ -548,7 +520,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Pocket.Router = (function(_super) {
+  Users.Router = (function(_super) {
 
     __extends(Router, _super);
 
@@ -562,11 +534,11 @@
     };
 
     Router.prototype["default"] = function() {
-      return pocket.app.views.body.update();
+      return users.app.views.body.update();
     };
 
     Router.prototype.editUser = function(id) {
-      return pocket.app.views.body.editUser(id);
+      return users.app.views.body.editUser(id);
     };
 
     return Router;
@@ -810,7 +782,7 @@ function program22(depth0,data) {
 
   buffer += "<div class=\"module content centered\" id=\""
     + escapeExpression(((stack1 = ((stack1 = depth0.module),stack1 == null || stack1 === false ? stack1 : stack1.name)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "\">\n  ";
+    + "\">\n  <h2>Users</h2>\n  ";
   stack2 = helpers['if'].call(depth0, depth0.editableUser, {hash:{},inverse:self.program(4, program4, data),fn:self.program(1, program1, data),data:data});
   if(stack2 || stack2 === 0) { buffer += stack2; }
   buffer += "\n</div>\n\n<div id=\"confirmUserRemoveModal\" class=\"modal hide fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">×</button>\n    <h3 class=\"modal-title\"></h3>\n  </div>\n  <div class=\"modal-body\">\n  </div>\n  <div class=\"modal-footer\">\n    <button class=\"closeModal btn\" data-dismiss=\"modal\" aria-hidden=\"true\">Cancel</button>\n    <button class=\"removeUser btn btn-danger\">Remove user</button>\n  </div>\n</div>\n";
