@@ -132,6 +132,10 @@ class Users.UsersView extends Users.BaseView
   search : (event) ->
     event.preventDefault()
     @searchQuery = $('input.search-query', event.currentTarget).val()
+    if !@searchQuery
+      @resultsDesc  = "Please enter a search term first"
+      @render()
+      return
     $.when(
       hoodieAdmin.users.search(@searchQuery)
     ).then (users) =>
