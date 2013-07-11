@@ -1,23 +1,12 @@
 {
-    "name": "hoodie-worker-users",
+    "name": "hoodie-plugin-users",
     "version": "0.0.6",
     "repository": {
         "type": "git",
-        "url": "https://github.com/hoodiehq/worker-users.git"
+        "url": "https://github.com/hoodiehq/plugin-users.git"
     },
     "dependencies": {
-        "hoodie-worker": "git://github.com/hoodiehq/hoodie-worker.git",
-        "nodemailer": "~0.3",
         "clone": "*"
     },
-    "main": "lib/worker.js",
-    "devDependencies": {
-        "jasmine-node": "*",
-        "when": "~1.7",
-        "when-promisify": "git://github.com/gr2m/when-promisify.git"
-    },
-    "scripts": {
-        "test": "jasmine-node spec",
-        "start": "node index.js"
-    }
+    "main": "worker.js"
 }
