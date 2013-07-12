@@ -1,9 +1,9 @@
-var newUserAccountHandler = require('lib/')
+// var newUserAccountHandler = require('lib/')
 
 module.exports = function(hoodie, doneCallback) {
 
   return // until @caolan gets all the API done
-  
+
   // handle new users (signups or )
   hoodie.account.on('add:user', handleNewUser)
   hoodie.account.on('add:anonymous_user', handleNewUser)
@@ -23,7 +23,7 @@ module.exports = function(hoodie, doneCallback) {
   // 1. create database
   // 2. grant access
   // 3. confirm user
-  // 
+  //
   function handleNewUser (userObject) {
     newUserAccountHandler.process(hoodie, userObject)
 
@@ -62,29 +62,29 @@ module.exports = function(hoodie, doneCallback) {
   }
 
   function handleUserDestroy(userObject) {
-    
+
   }
 
   // this is how a passwordReset doc looks like (a bit simplified):
-  // 
+  //
   // {
   //   _id: "org.couchdb.user:$passwordReset/joe@example.com/uuid789",
   //   name: "$passwordReset/joe@example.com/uuid789",
   //   type: 'user',
   //   roles: []
   // };
-  // 
+  //
   // 1. check if username exists
   // 2. generate new password
   // 3. update current user object
   // 4. send out new password via email
   // 5. remove $resetPassword object
-  // 
+  //
   function handlePasswordReset(object) {
-    
+
   }
 
-  // 
+  //
   function handleUserUpdate(userObject) {
     if (userObject.$newUsername) {
       handleUsernameChange(userObject)
@@ -93,9 +93,9 @@ module.exports = function(hoodie, doneCallback) {
 
   // 1. create new user doc with current property and new username
   // 2. remove old username
-  // 
+  //
   function handleUsernameChange(userObject) {
-    
+
   }
 
   doneCallback();
