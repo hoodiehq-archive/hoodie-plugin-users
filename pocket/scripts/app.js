@@ -4,7 +4,7 @@
   if (location.hostname === 'localhost' && location.port === "9000") {
     whereTheMagicHappens = "http://users.dev/_api";
     whereTheMagicHappens = "http://127.0.0.1:6022/_api";
-    whereTheMagicHappens = "http://127.0.0.1:6014/_api";
+    whereTheMagicHappens = "http://127.0.0.1:6015/_api";
   } else {
     whereTheMagicHappens = void 0;
   }
@@ -586,7 +586,7 @@ function program2(depth0,data) {
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "\">\n      <section class=\"password\">\n        <div class=\"control-group\">\n          <label>\n            New password\n          </label>\n          <div class=\"controls\">\n            <input type=\"text\" name=\"password\" value=\"\" placeholder=\"Password cannot be empty\">\n          </div>\n        </div>\n      </section>\n      <section>\n        <div class=\"control-group\">\n          <label>\n            &nbsp;\n          </label>\n          <div class=\"controls\">\n            <button class=\"btn\" type=\"submit\">Update password</button>\n            <span class=\"submitMessage\"></span>\n          </div>\n        </div>\n      </section>\n    </form>\n    ";
+    + "\">\n      <section class=\"password\">\n        <div class=\"control-group\">\n          <label>\n            New password\n          </label>\n          <div class=\"controls\">\n            <input type=\"text\" name=\"password\" value=\"\" placeholder=\"Password cannot be empty\">\n          </div>\n        </div>\n      </section>\n      <section>\n        <div class=\"control-group\">\n          <label>\n            &nbsp;\n          </label>\n          <div class=\"controls\">\n            <button class=\"btn\" type=\"submit\">Update password</button>\n            <span class=\"submitMessage\"></span>\n          </div>\n        </div>\n      </section>\n    </form>\n    <a href=\"#\">back</a>\n    ";
   return buffer;
   }
 

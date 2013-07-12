@@ -1,10 +1,25 @@
-@import "compass_twitter_bootstrap";
+//@import "compass_twitter_bootstrap";
 @import "compass/css3/transform";
 @import "compass/css3/transition";
 @import "compass/css3/border-radius";
 
 /* apply a natural box layout model to all elements */
 * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+@mixin clearfix {
+  *zoom: 1;
+  &:before,
+  &:after {
+    display: table;
+    content: "";
+    // Fixes Opera/contenteditable bug:
+    // http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
+    line-height: 0;
+  }
+  &:after {
+    clear: both;
+  }
+}
 
 // Image replacement / Hide text
 .ir {
