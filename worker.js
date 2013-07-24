@@ -1,6 +1,6 @@
-var userAccount = require('./lib/user_account.js');
-
 module.exports = function(hoodie, doneCallback) {
+
+  var userAccount = require('./lib/user_account.js')(hoodie);
 
   // handle changes in _users
   hoodie.account.on('change', handleChange)
