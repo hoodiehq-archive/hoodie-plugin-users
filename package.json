@@ -1,5 +1,5 @@
 {
-    "name": "hoodie-worker-newusers",
+    "name": "hoodie-plugin-users",
     "version": "0.0.6",
     "repository": {
         "type": "git",

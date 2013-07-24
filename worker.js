@@ -1,68 +1,15 @@
-// var newUserAccountHandler = require('lib/')
+var userAccount = require('./lib/user_account.js');
 
 module.exports = function(hoodie, doneCallback) {
 
-  return // until @caolan gets all the API done
+  // handle changes in _users
+  hoodie.account.on('change', handleChange)
+  function handleChange (change) {
+    var object = change.doc;
 
-  // handle new users (signups or )
-  hoodie.account.on('add:user', handleNewUser)
-  hoodie.account.on('add:anonymous_user', handleNewUser)
-
-  // handle user account changes
-  hoodie.account.on('update:user', handleUserUpdate)
-  hoodie.account.on('update:anonymous_user', handleUserUpdate)
-
-  // handle user account destroys
-  hoodie.account.on('remove:user', handleUserDestroy)
-  hoodie.account.on('remove:anonymous_user', handleUserDestroy)
-
-  // handle password resets
-  hoodie.account.on('add:$passwordReset', handlePasswordReset)
-
-
-  // 1. create database
-  // 2. grant access
-  // 3. confirm user
-  //
-  function handleNewUser (userObject) {
-    newUserAccountHandler.process(hoodie, userObject)
-
-    var type = /^user\//.test(userObject.name) ? 'user' : 'anonymous_user';
-    var dbName = 'user/' + userObject.ownerHash;
-
-    // for now, we confirm new user / anonymous_user accounts right away.
-    // We plan to add settings for that though.
-    hoodie.database.add(dbName, function(error) {
-      if (error) {
-        return handleUserError(type, userObject, error);
-      }
-
-      hoodie.database.grantReadAccess(type, userObject.ownerHash, function(error) {
-        if(error) {
-          return handleUserError(type, userObject, error);
-        }
-
-        confirmUser(type, userObject, function(error) {
-          if(error) {
-            return handleUserError(type, userObject, error);
-          }
-        });
-      })
-    });
-  }
-
-  function handleUserError(type, userObject, error) {
-    hoodie.account.update(type, userObject.ownerHash, {$state: "error", error: error});
-  }
-
-  function confirmUser(type, userObject, callback) {
-    var roles = [userObject.ownerHash, 'confirmed'];
-    var update = {roles: roles, $state: "confirmed"};
-    hoodie.account.update(type, userObject.ownerHash, {roles: roles}, callback);
-  }
-
-  function handleUserDestroy(userObject) {
-
+    if (userAccount.isUserAccount(object)) {
+      userAccount.handleChange(object)
+    }
   }
 
   // this is how a passwordReset doc looks like (a bit simplified):
@@ -81,14 +28,7 @@ module.exports = function(hoodie, doneCallback) {
   // 5. remove $resetPassword object
   //
   function handlePasswordReset(object) {
-
-  }
-
-  //
-  function handleUserUpdate(userObject) {
-    if (userObject.$newUsername) {
-      handleUsernameChange(userObject)
-    }
+    console.log('handlePasswordReset!');
   }
 
   // 1. create new user doc with current property and new username
