@@ -3,14 +3,8 @@ module.exports = function(hoodie, doneCallback) {
   var userAccount = require('./lib/user_account.js')(hoodie);
 
   // handle changes in _users
-  hoodie.account.on('change', handleChange)
-  function handleChange (change) {
-    var object = change.doc;
-
-    if (userAccount.isUserAccount(object)) {
-      userAccount.handleChange(object)
-    }
-  }
+  hoodie.account.on('change:user', userAccount.handleChange)
+  hoodie.account.on('change:user_anonymous', userAccount.handleChange)
 
   // this is how a passwordReset doc looks like (a bit simplified):
   //
