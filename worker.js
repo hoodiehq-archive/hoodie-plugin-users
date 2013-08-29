@@ -4,8 +4,9 @@ module.exports = function (hoodie, doneCallback) {
   var passwordReset = require('./lib/password_reset.js')(hoodie);
 
   // bootstrap existing users
-  hoodie.account.findAll(function (accounts) {
-    console.log(accounts);
+  hoodie.account.findAll(function (error, accounts) {
+    accounts.forEach(userAccount.handleChange);
+    doneCallback();
   });
 
   // handle changes in _users
@@ -14,7 +15,4 @@ module.exports = function (hoodie, doneCallback) {
 
   //
   hoodie.account.on('change:$passwordReset', passwordReset.handleChange);
-
-
-  doneCallback();
 };
