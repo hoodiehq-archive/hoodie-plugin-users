@@ -3,7 +3,7 @@
     "version": "0.0.9",
     "repository": {
         "type": "git",
-        "url": "https://github.com/hoodiehq/plugin-users.git"
+        "url": "https://github.com/hoodiehq/hoodie-plugin-users.git"
     },
     "dependencies": {
         "clone": "*"
