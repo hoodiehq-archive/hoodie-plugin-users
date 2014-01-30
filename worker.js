@@ -10,9 +10,9 @@ module.exports = function (hoodie, doneCallback) {
   });
 
   // handle changes in _users
-  hoodie.account.on('change:user', userAccount.handleChange);
-  hoodie.account.on('change:user_anonymous', userAccount.handleChange);
+  hoodie.account.on('user:change', userAccount.handleChange);
+  hoodie.account.on('user_anonymous:change', userAccount.handleChange);
 
   //
-  hoodie.account.on('change:$passwordReset', passwordReset.handleChange);
+  hoodie.account.on('$passwordReset:change', passwordReset.handleChange);
 };
