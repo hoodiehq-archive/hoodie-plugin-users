@@ -82,6 +82,7 @@ To create an account for an anonymous user and to kick off data synchronization,
 `hoodie.account.anonymousSignUp()`. This will create a doc in `_users` that looks similar to what 
 `hoodie.account.signUp(username, password)` generates:
 
+```json
 {
    "_id": "org.couchdb.user:anonymous_user/uuid567",
    "_rev": "4f9b7ea8424eb477b8cbb6cba49e0dd5",
@@ -94,6 +95,7 @@ To create an account for an anonymous user and to kick off data synchronization,
    "derived_key": "4b1d247f488fd4f335a4e0d16f2c5386a5ac98b1",
    "salt": "564aa550233a06f3bbed1cf014ee21e1"
 }
+```
 
 The only differences are:
 
