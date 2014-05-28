@@ -61,14 +61,40 @@ suite('create user db', function () {
         hoodie.account.signOut().done(function (doc) {
           $.getJSON('/_api/user%2F' + otherId)
             .fail(function (err) {
-              assert.equal(err.status, 401, 'expected unauthorized');
+              assert.equal(err.status, 401, 'expects unauthorized');
               done();
             })
             .done(function (data) {
               assert.ok(false, 'should be unauthorized');
-              done();
             });
         });
+      });
+  });
+
+  test('user db is not readable by other users', function (done) {
+    this.timeout(10000);
+    var firstId;
+    hoodie.account.signUp('dbtest4', 'password')
+      .then(function () {
+        firstId = hoodie.id();
+        return hoodie.account.signOut();
+      })
+      .then(function () {
+        return hoodie.account.signUp('dbtest5', 'password');
+      })
+      .fail(function (err) {
+        assert.ok(false, err.message);
+      })
+      .done(function () {
+        assert.equal(hoodie.account.username, 'dbtest5');
+        $.getJSON('/_api/user%2F' + firstId)
+          .fail(function (err) {
+            assert.equal(err.status, 401, 'expects unauthorized');
+            done();
+          })
+          .done(function (data) {
+            assert.ok(false, 'should be unauthorized');
+          });
       });
   });
 
