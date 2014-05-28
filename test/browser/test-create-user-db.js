@@ -12,21 +12,63 @@ suite('create user db', function () {
   test('user database added on signUp', function (done) {
     this.timeout(10000);
     hoodie.account.signUp('dbtest', 'password')
+      .then(function () {
+        return $.getJSON('/_api/_all_dbs');
+      })
+      .fail(function (err) {
+        assert.ok(false, err.message);
+      })
+      .done(function (data) {
+        assert.notEqual(data.indexOf('user/' + hoodie.id()), -1);
+        done();
+      });
+  });
+
+  test('user db is writable by user', function (done) {
+    this.timeout(10000);
+    hoodie.account.signUp('dbtest2', 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
       })
       .done(function () {
-        hoodie.store.on('sync', function () {
-          $.getJSON('/_api/_all_dbs')
+        hoodie.store.add('example', {title: 'foo'})
+          .fail(function (err) {
+            assert.ok(false, err.message);
+          })
+          .done(function (doc) {
+            hoodie.store.on('sync', function () {
+              $.getJSON('/_api/user%2F' + hoodie.id() + '/example%2F' + doc.id)
+                .fail(function (err) {
+                  assert.ok(false, JSON.stringify(err));
+                })
+                .done(function (data) {
+                  assert.equal(data.title, 'foo');
+                  done();
+                });
+            });
+          });
+      });
+  });
+
+  test('user db is not readable by anonymous users', function (done) {
+    this.timeout(10000);
+    hoodie.account.signUp('dbtest3', 'password')
+      .fail(function (err) {
+        assert.ok(false, err.message);
+      })
+      .done(function () {
+        var otherId = hoodie.id();
+        hoodie.account.signOut().done(function (doc) {
+          $.getJSON('/_api/user%2F' + otherId)
             .fail(function (err) {
-              assert.ok(false, err.message);
+              assert.equal(err.status, 401, 'expected unauthorized');
+              done();
             })
             .done(function (data) {
-              assert.notEqual(data.indexOf('user/' + hoodie.id()), -1);
+              assert.ok(false, 'should be unauthorized');
               done();
             });
         });
-        hoodie.store.add('example', {title: 'foo'});
       });
   });
 
