@@ -25,7 +25,8 @@
     "plugins": []
   },
   "dependencies": {
-    "async": "^0.9.0"
+    "async": "^0.9.0",
+    "lodash": "^2.4.1"
   },
   "scripts": {
     "test": "grunt test"
