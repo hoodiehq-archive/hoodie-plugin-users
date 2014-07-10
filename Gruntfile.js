@@ -45,6 +45,9 @@ module.exports = function (grunt) {
       },
       removePlugin: {
         command: 'hoodie uninstall <%= pkg.name.replace("hoodie-plugin-", "") %>'
+      },
+      killHoodie: {
+        command: 'pkill -f hoodie-plugin-users'
       }
     },
 
@@ -103,6 +106,19 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', []);
+  grunt.registerTask('start', [
+    'env:test',
+    'shell:removeData',
+    'shell:npmLink',
+    'shell:installPlugin',
+    'hoodie'
+  ]);
+  grunt.registerTask('stop', [
+    'hoodie_stop',
+    'shell:npmUnlink',
+    'shell:removePlugin',
+    'shell:killHoodie'
+  ]);
   grunt.registerTask('test', [
     'jshint',
     'test:unit',
