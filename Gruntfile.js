@@ -19,7 +19,8 @@ module.exports = function (grunt) {
 
     simplemocha: {
       options: {
-        ui: 'tdd'
+        ui: 'tdd',
+        trace: true
       },
       unit: {
         src: ['test/unit/*.js']
