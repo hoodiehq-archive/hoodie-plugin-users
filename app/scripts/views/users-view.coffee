@@ -105,7 +105,10 @@ class Users.UsersView extends Users.BaseView
     type = $('#confirmUserRemoveModal').data('type');
     hoodieAdmin.user.remove(type, id).then =>
       $('[data-id="'+id+'"]').remove()
+      # Because bootstrap
       $('#confirmUserRemoveModal').modal('hide')
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').remove();
       @update()
 
   editUser : (id) ->
