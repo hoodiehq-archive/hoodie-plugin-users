@@ -55,12 +55,12 @@ class Users.UsersView extends Users.BaseView
       $btn.attr('disabled', 'disabled')
       $btn.text("Adding #{username}…")
 
-      ownerHash = hoodieAdmin.uuid()
+      hoodieId = hoodieAdmin.uuid()
       hoodieAdmin.user.add('user', {
         id : username
         name : "user/#{username}"
-        ownerHash : ownerHash
-        database : "user/#{ownerHash}"
+        hoodieId : hoodieId
+        database : "user/#{hoodieId}"
         signedUpAt : new Date()
         roles : []
         password : password
