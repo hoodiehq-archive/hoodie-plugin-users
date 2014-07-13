@@ -1,15 +1,20 @@
 (function() {
-  var whereTheMagicHappens;
 
-  if (location.hostname === 'localhost' && location.port === "9000") {
-    whereTheMagicHappens = "http://users.dev/_api";
-    whereTheMagicHappens = "http://127.0.0.1:6022/_api";
-    whereTheMagicHappens = "http://127.0.0.1:6015/_api";
-  } else {
-    whereTheMagicHappens = void 0;
-  }
+  window.hoodieAdmin = top.hoodieAdmin;
 
-  window.hoodieAdmin = new HoodieAdmin(whereTheMagicHappens);
+  hoodieAdmin.id = function() {
+    return 'id';
+  };
+
+  hoodieAdmin.uuid = function() {
+    return Math.random().toString();
+  };
+
+  hoodieAdmin.user.findAll().done(function(results) {
+    return hoodieAdmin.user.search = function() {
+      return $.Deferred().resolve(results.slice(0, 10)).promise();
+    };
+  });
 
   Backbone.Layout.configure({
     manage: true,
@@ -129,9 +134,7 @@
         return users.appInfo.defaultReplyEmailAddress;
       });
       Handlebars.registerHelper('linkToFutonUser', function(userName) {
-        var couchUrl;
-        couchUrl = hoodieAdmin.baseUrl.replace('_api', '_utils');
-        return couchUrl + '/document.html?_users/org.couchdb.user:' + userName;
+        return window.location.origin + '/_api/_utils/document.html?_users/org.couchdb.user:' + userName;
       });
       Handlebars.registerHelper("debug", function(optionalValue) {
         console.log("\nCurrent Context");
@@ -228,11 +231,11 @@
 
       this.afterRender = __bind(this.afterRender, this);
 
-      this.beforeRender = __bind(this.beforeRender, this);
-
       this.removeUser = __bind(this.removeUser, this);
 
       this.removeUserPrompt = __bind(this.removeUserPrompt, this);
+
+      this.onAddUser = __bind(this.onAddUser, this);
 
       this.update = __bind(this.update, this);
       return UsersView.__super__.constructor.apply(this, arguments);
@@ -242,24 +245,28 @@
 
     UsersView.prototype.sort = void 0;
 
-    UsersView.prototype.sortBy = void 0;
+    UsersView.prototype.sortBy = 'signupDate';
 
-    UsersView.prototype.sortDirection = void 0;
+    UsersView.prototype.sortDirection = 'sort-up';
+
+    UsersView.prototype.blockSorting = false;
 
     UsersView.prototype.events = {
       'submit form.config': 'updateConfig',
-      'submit form.form-search': 'search',
+      'submit form.userSearch': 'search',
       'submit form.updatePassword': 'updatePassword',
       'submit form.updateUsername': 'updateUsername',
+      'submit form.addUser': 'addUser',
       'click .addUser button[type="submit"]': 'addUser',
       'click .user a.removeUserPrompt': 'removeUserPrompt',
       'click #confirmUserRemoveModal .removeUser': 'removeUser',
-      'click .clearSearch': 'clearSearch'
+      'click .clearSearch': 'clearSearch',
+      'click .sort-header': 'saveSorting'
     };
 
     UsersView.prototype.update = function() {
       var _this = this;
-      return $.when(hoodieAdmin.users.findAll()).then(function(users, object, appConfig) {
+      return $.when(hoodieAdmin.user.findAll()).then(function(users, object, appConfig) {
         var _base;
         if (object == null) {
           object = {};
@@ -298,16 +305,17 @@
     };
 
     UsersView.prototype.addUser = function(event) {
-      var $btn, ownerHash, password, username;
+      var $btn, $submitMessage, ownerHash, password, username;
       event.preventDefault();
       $btn = $(event.currentTarget);
-      username = $btn.closest('form').find('.username').val();
-      password = $btn.closest('form').find('.password').val();
+      username = $('.addUser .username').val();
+      password = $('.addUser .password').val();
+      $submitMessage = $btn.siblings('.submitMessage');
       if (username && password) {
         $btn.attr('disabled', 'disabled');
-        $btn.siblings('.submitMessage').text("Adding " + username + "…");
+        $btn.text("Adding " + username + "…");
         ownerHash = hoodieAdmin.uuid();
-        return hoodieAdmin.users.add('user', {
+        return hoodieAdmin.user.add('user', {
           id: username,
           name: "user/" + username,
           ownerHash: ownerHash,
@@ -315,18 +323,29 @@
           signedUpAt: new Date(),
           roles: [],
           password: password
-        }).done(this.update).fail(function(data) {
+        }).done(this.onAddUser).fail(function(data) {
           console.log("could not add user: ", data);
           $btn.attr('disabled', null);
-          if (data.statusText === "Conflict") {
-            return $btn.siblings('.submitMessage').text("Sorry, '" + username + "' already exists");
+          if (data.name === "HoodieConflictError") {
+            $submitMessage.text("Sorry, '" + username + "' already exists");
           } else {
-            return $btn.siblings('.submitMessage').text("Error: " + data.status + " - " + data.responseText);
+            $submitMessage.text("Error: " + data.status + " - " + data.responseText);
           }
+          $btn.text("Add user");
+          return $btn.attr('disabled', null);
         });
       } else {
-        return $btn.siblings('.submitMessage').text("Please enter a username and a password");
+        return $submitMessage.text("Please enter a username and a password");
       }
+    };
+
+    UsersView.prototype.onAddUser = function(event) {
+      var $btn;
+      $('.addUser .username').val("");
+      $('.addUser .password').val("");
+      $btn = $('form.addUser button').text("Add user").attr('disabled', null);
+      $('form.addUser .submitMessage').text("Added new user.");
+      this.update();
     };
 
     UsersView.prototype.removeUserPrompt = function(event) {
@@ -346,7 +365,7 @@
       event.preventDefault();
       id = $('#confirmUserRemoveModal').data('id');
       type = $('#confirmUserRemoveModal').data('type');
-      return hoodieAdmin.users.remove(type, id).then(function() {
+      return hoodieAdmin.user.remove(type, id).then(function() {
         $('[data-id="' + id + '"]').remove();
         $('#confirmUserRemoveModal').modal('hide');
         return _this.update();
@@ -355,7 +374,7 @@
 
     UsersView.prototype.editUser = function(id) {
       var _this = this;
-      return $.when(hoodieAdmin.users.find('user', id)).then(function(user) {
+      return $.when(hoodieAdmin.user.find('user', id)).then(function(user) {
         _this.editableUser = user;
         _this.render();
       });
@@ -379,7 +398,7 @@
       if (password) {
         $btn.attr('disabled', 'disabled');
         $form.find('.submitMessage').text("Updating password");
-        return hoodieAdmin.users.update('user', id, {
+        return hoodieAdmin.user.update('user', id, {
           password: password
         }).done(function(data) {
           $btn.attr('disabled', null);
@@ -402,7 +421,7 @@
         this.render();
         return;
       }
-      return $.when(hoodieAdmin.users.search(this.searchQuery)).then(function(users) {
+      return hoodieAdmin.user.search(this.searchQuery).then(function(users) {
         _this.users = users;
         switch (users.length) {
           case 0:
@@ -424,18 +443,16 @@
       return this.update();
     };
 
-    UsersView.prototype.beforeRender = function() {
-      this.sortBy = $('#userList .sort-up, #userList .sort-down').data('sort-by');
-      if (this.sortBy) {
-        this.sortDirection = 'sort-down';
-        if ($('#userList .sort-up').length !== 0) {
-          this.sortDirection = 'sort-up';
+    UsersView.prototype.saveSorting = function(event) {
+      if (!this.blockSorting) {
+        this.sortBy = $('#userList .sort-up, #userList .sort-down').data('sort-by');
+        if (this.sortBy) {
+          this.sortDirection = 'sort-down';
+          if ($('#userList .sort-up').length !== 0) {
+            return this.sortDirection = 'sort-up';
+          }
         }
-      } else {
-        this.sortBy = "signupDate";
-        this.sortDirection = "sort-up";
       }
-      return UsersView.__super__.beforeRender.apply(this, arguments);
     };
 
     UsersView.prototype.afterRender = function() {
@@ -443,16 +460,22 @@
       userList = document.getElementById('userList');
       if (userList) {
         this.sort = new Tablesort(userList);
+        this.blockSorting = true;
         sortHeader = $('#userList [data-sort-by="' + this.sortBy + '"]');
         sortHeader.click();
         if (this.sortDirection === 'sort-up') {
           sortHeader.click();
         }
+        this.blockSorting = false;
       }
       this.$el.find('.formCondition').each(function(index, el) {
         return users.handleConditionalFormElements(el, 0);
       });
       return UsersView.__super__.afterRender.apply(this, arguments);
+    };
+
+    UsersView.prototype.interceptLink = function(event) {
+      return console.log('interceptLink: ', event);
     };
 
     UsersView.prototype._updateModule = function(module) {
@@ -533,6 +556,10 @@
       "user/:id": "editUser"
     };
 
+    Router.prototype.initialize = function() {
+      return users.router = this;
+    };
+
     Router.prototype["default"] = function() {
       return users.app.views.body.update();
     };
@@ -552,12 +579,12 @@ this["JST"] = this["JST"] || {};
 this["JST"]["users"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, stack2, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
   
   var buffer = "", stack1;
-  buffer += "\n    ";
+  buffer += "\n  ";
   stack1 = helpers['with'].call(depth0, depth0.editableUser, {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n  ";
@@ -566,59 +593,51 @@ function program1(depth0,data) {
 function program2(depth0,data) {
   
   var buffer = "", stack1;
-  buffer += "\n    <legend>Edit user '";
+  buffer += "\n  <h2>Edit user '";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "'</legend>\n    <form class=\"updateUsername form-horizontal\" data-id=\"";
+    + "'</h2>\n  <form class=\"updatePassword\" data-id=\"";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "\">\n      <section class=\"username noBorder\">\n        <div class=\"control-group\">\n          <label>\n            New username\n          </label>\n          <div class=\"controls\">\n            <input type=\"text\" name=\"username\" value=\"";
+    + "\">\n    <fieldset>\n      <label for=\"input-1\">";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "\" data-oldusername=\"";
-  if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
-  else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
-  buffer += escapeExpression(stack1)
-    + "\" placeholder=\"Username cannot be empty\" disabled>\n            <span class=\"note\">Changing the username isn't implemented yet, sorry.</span>\n          </div>\n        </div>\n      </section>\n      <section>\n        <div class=\"control-group\">\n          <label>\n            &nbsp;\n          </label>\n          <div class=\"controls\">\n            <button class=\"btn\" type=\"submit\" disabled>Update username</button>\n            <span class=\"submitMessage\"></span>\n          </div>\n        </div>\n      </section>\n    </form>\n    <form class=\"updatePassword form-horizontal\" data-id=\"";
-  if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
-  else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
-  buffer += escapeExpression(stack1)
-    + "\">\n      <section class=\"password\">\n        <div class=\"control-group\">\n          <label>\n            New password\n          </label>\n          <div class=\"controls\">\n            <input type=\"text\" name=\"password\" value=\"\" placeholder=\"Password cannot be empty\">\n          </div>\n        </div>\n      </section>\n      <section>\n        <div class=\"control-group\">\n          <label>\n            &nbsp;\n          </label>\n          <div class=\"controls\">\n            <button class=\"btn\" type=\"submit\">Update password</button>\n            <span class=\"submitMessage\"></span>\n          </div>\n        </div>\n      </section>\n    </form>\n    <a href=\"#\">back</a>\n    ";
+    + "'s password</label>\n      <input type=\"text\" class=\"form-control\" name=\"password\" placeholder=\"password can not be empty\">\n      <button class=\"btn\" type=\"submit\">Update password</button>\n      <span class=\"submitMessage\"></span>\n    </fieldset>\n  </form>\n  <a href=\"#\">back</a>\n  ";
   return buffer;
   }
 
 function program4(depth0,data) {
   
   var buffer = "", stack1, stack2;
-  buffer += "\n  <legend>Settings</legend>\n\n  <span class=\"description\">Configure whether users must confirm their signup and if yes, set up the email they will receive for this purpose.</span>\n\n  <form class=\"config form-horizontal\">\n    ";
+  buffer += "\n  <!--\n  <h2>Settings</h2>\n  <p>Configure whether users must confirm their signup and if yes, set up the email they will receive for this purpose.</p>\n  <form>\n    ";
   stack1 = helpers['if'].call(depth0, depth0.emailTransportNotConfigured, {hash:{},inverse:self.program(7, program7, data),fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n  </form>\n</div>\n\n<hr>\n\n<div class=\"content centered\">\n  <h2 class=\"top\">Users</h2>\n  <fieldset class=\"toggle\">\n    <legend class=\"toggler\">Add user</legend>\n    <div class=\"togglee\">\n      <legend>Add user</legend>\n      <form class=\"form-horizontal addUser\">\n        <section class=\"noBorder\">\n          <div class=\"control-group\">\n            <label>\n              Username\n            </label>\n            <div class=\"controls\">\n              <input type=\"text\" name=\"username\" class=\"username\" value=\"\" placeholder=\"username\">\n            </div>\n          </div>\n        </section>\n        <section class=\"noBorder\">\n          <div class=\"control-group\">\n            <label>\n              Password\n            </label>\n            <div class=\"controls\">\n              <input type=\"text\" name=\"password\" class=\"password\" value=\"\" placeholder=\"\">\n            </div>\n          </div>\n        </section>\n        <section>\n          <div class=\"control-group\">\n            <label>\n              &nbsp;\n            </label>\n            <div class=\"controls\">\n              <button class=\"btn\" type=\"submit\">Add user</button>\n              <span class=\"submitMessage\"></span>\n            </div>\n          </div>\n        </section>\n      </form>\n    </div>\n  </fieldset>\n  <div class=\"userSearch group\">\n    <form class=\"form-search\">\n      <div class=\"input-append\">\n        <input type=\"text\" class=\"span2 search-query\" placeholder=\"Username\"";
+  buffer += "\n  </form>\n  <hr>\n  -->\n\n  <h2>Add new user</h2>\n  <form action=\"\" class=\"addUser\">\n    <fieldset>\n      <div class=\"group\">\n        <label for=\"\">New user's name</label>\n        <input type=\"text\" class=\"form-control username\" placeholder=\"User name\" required=\"\">\n        <label for=\"\">New user's password</label>\n        <input type=\"text\" class=\"form-control password\" placeholder=\"Password\" required=\"\">\n        <button class=\"submit btn ok\" type=\"submit\">Add user</button>\n        <span class=\"submitMessage\"></span>\n      </div>\n    </fieldset>\n  </form>\n\n  <h2>Search for users</h2>\n  <form action=\"\" class=\"userSearch\">\n    <fieldset>\n      <div class=\"group\">\n        <label for=\"\">Search term</label>\n        <input type=\"text\" class=\"form-control search-query\" placeholder=\"Username\"";
   stack1 = helpers['if'].call(depth0, depth0.searchQuery, {hash:{},inverse:self.noop,fn:self.program(9, program9, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += ">\n        <button type=\"submit\" class=\"btn\">Search</button>\n      </div>\n    </form>\n    ";
+  buffer += ">\n        <p class=\"help-block\">Search only applies to usernames.</p>\n        <button class=\"submit btn ok\" type=\"submit\">Search</button>\n        ";
   stack1 = helpers['if'].call(depth0, depth0.searchQuery, {hash:{},inverse:self.noop,fn:self.program(11, program11, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n  </div>\n  <div class=\"tableStatus\">\n    <p class=\"currentSearchTerm muted\">";
+  buffer += "\n      </div>\n    </fieldset>\n  </form>\n\n  <h2>Your users</h2>\n  <div class=\"content centered\">\n    <div class=\"tableStatus\">\n      <p class=\"currentSearchTerm muted\">";
   if (stack1 = helpers.resultsDesc) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.resultsDesc; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</p>\n    <p class=\"currentSearchMetrics muted\">Showing "
+  buffer += "</p>\n      <p class=\"currentSearchMetrics muted\">Showing "
     + escapeExpression(((stack1 = ((stack1 = depth0.users),stack1 == null || stack1 === false ? stack1 : stack1.length)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + " of ";
   if (stack2 = helpers.totalUsers) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.totalUsers; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + " users</p>\n  </div>\n  ";
+    + " users</p>\n    </div>\n    ";
   stack2 = helpers['if'].call(depth0, depth0.users, {hash:{},inverse:self.noop,fn:self.program(13, program13, data),data:data});
   if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "\n  ";
+  buffer += "\n    ";
   stack2 = helpers['if'].call(depth0, depth0.users, {hash:{},inverse:self.noop,fn:self.program(22, program22, data),data:data});
   if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "\n";
+  buffer += "\n    ";
   return buffer;
   }
 function program5(depth0,data) {
@@ -660,22 +679,22 @@ function program9(depth0,data) {
 function program11(depth0,data) {
   
   
-  return "\n    <button class=\"btn clearSearch\">Clear search</button>\n    ";
+  return "\n        <button class=\"btn clearSearch\">Clear search</button>\n        ";
   }
 
 function program13(depth0,data) {
   
   var buffer = "", stack1;
-  buffer += "\n  <table id=\"userList\" class=\"table users\">\n    <thead>\n      <tr>\n        <th data-sort-by=\"username\">Username</th>\n        <th data-sort-by=\"lastSeen\">Last seen</th>\n        <th data-sort-by=\"signupDate\">Signup date</th>\n        <th data-sort-by=\"state\">State</th>\n        <th class=\"no-sort\"></th>\n      </tr>\n    </thead>\n    <tbody>\n      ";
+  buffer += "\n    <table id=\"userList\" class=\"table users table-striped\">\n      <thead>\n        <tr>\n          <th data-sort-by=\"username\">Username</th>\n          <th data-sort-by=\"signupDate\">Signup date</th>\n          <th data-sort-by=\"state\">State</th>\n          <th class=\"no-sort\"></th>\n        </tr>\n      </thead>\n      <tbody>\n        ";
   stack1 = helpers.each.call(depth0, depth0.users, {hash:{},inverse:self.noop,fn:self.program(14, program14, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n    </tbody>\n  </table>\n  ";
+  buffer += "\n      </tbody>\n    </table>\n    ";
   return buffer;
   }
 function program14(depth0,data) {
   
   var buffer = "", stack1, stack2, options;
-  buffer += "\n      <tr data-id=\"";
+  buffer += "\n        <tr data-id=\"";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
@@ -683,15 +702,11 @@ function program14(depth0,data) {
   if (stack1 = helpers.type) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.type; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "\" class=\"user\">\n        <td>";
+    + "\" class=\"user\">\n          <td>";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "</td>\n        <td>";
-  if (stack1 = helpers.lastLogin) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
-  else { stack1 = depth0.lastLogin; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
-  buffer += escapeExpression(stack1)
-    + "</td>\n        <td data-sort=\"";
+    + "</td>\n          <td data-sort=\"";
   options = {hash:{},data:data};
   buffer += escapeExpression(((stack1 = helpers.convertISOToTimestamp || depth0.convertISOToTimestamp),stack1 ? stack1.call(depth0, depth0.signedUpAt, options) : helperMissing.call(depth0, "convertISOToTimestamp", depth0.signedUpAt, options)))
     + "\" class=\"timeago\" title=\"";
@@ -702,17 +717,17 @@ function program14(depth0,data) {
   if (stack2 = helpers.signedUpAt) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.signedUpAt; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + "</td>\n        <td>\n          ";
+    + "</td>\n          <td>\n            ";
   stack2 = helpers['if'].call(depth0, depth0.$error, {hash:{},inverse:self.program(17, program17, data),fn:self.program(15, program15, data),data:data});
   if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "\n        </td>\n        <td class=\"no-sort\">\n          <a href=\"#user/";
+  buffer += "\n          </td>\n          <td class=\"no-sort\">\n            <a href=\"#user/";
   if (stack2 = helpers.id) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.id; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + "\" class=\"edit\">edit</a> /\n          <a href=\"#\" class=\"removeUserPrompt\">delete</a> /\n          <a href=\"";
+    + "\" class=\"edit\">edit</a> /\n            <a href=\"#\" class=\"removeUserPrompt\">delete</a> /\n            <a href=\"";
   options = {hash:{},data:data};
   buffer += escapeExpression(((stack1 = helpers.linkToFutonUser || depth0.linkToFutonUser),stack1 ? stack1.call(depth0, depth0.name, options) : helperMissing.call(depth0, "linkToFutonUser", depth0.name, options)))
-    + "\">futon</a>\n        </td>\n      </tr>\n      ";
+    + "\">futon</a>\n          </td>\n        </tr>\n        ";
   return buffer;
   }
 function program15(depth0,data) {
@@ -733,7 +748,7 @@ function program15(depth0,data) {
   if (stack2 = helpers.id) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.id; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + "'s user page in Futon</a></p>\n              </div>\n            </div>\n          ";
+    + "'s user page in Futon</a></p>\n              </div>\n            </div>\n            ";
   return buffer;
   }
 
@@ -743,13 +758,13 @@ function program17(depth0,data) {
   buffer += "\n            ";
   stack1 = helpers['if'].call(depth0, depth0.$state, {hash:{},inverse:self.program(20, program20, data),fn:self.program(18, program18, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n          ";
+  buffer += "\n            ";
   return buffer;
   }
 function program18(depth0,data) {
   
   var buffer = "", stack1;
-  buffer += "\n              ";
+  buffer += "\n            ";
   if (stack1 = helpers.$state) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.$state; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
@@ -760,31 +775,29 @@ function program18(depth0,data) {
 function program20(depth0,data) {
   
   
-  return "\n              <span class=\"warn\">unconfirmed</span><i class=\"icon-question-sign\"></i>\n            ";
+  return "\n            <span class=\"pill warn\">unconfirmed</span>\n            ";
   }
 
 function program22(depth0,data) {
   
   var buffer = "", stack1, stack2;
-  buffer += "\n  <div class=\"tableStatus\">\n    <p class=\"currentSearchTerm muted\">";
+  buffer += "\n    <div class=\"tableStatus\">\n      <p class=\"currentSearchTerm muted\">";
   if (stack1 = helpers.resultsDesc) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.resultsDesc; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</p>\n    <p class=\"currentSearchMetrics muted\">Showing "
+  buffer += "</p>\n      <p class=\"currentSearchMetrics muted\">Showing "
     + escapeExpression(((stack1 = ((stack1 = depth0.users),stack1 == null || stack1 === false ? stack1 : stack1.length)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + " of ";
   if (stack2 = helpers.totalUsers) { stack2 = stack2.call(depth0, {hash:{},data:data}); }
   else { stack2 = depth0.totalUsers; stack2 = typeof stack2 === functionType ? stack2.apply(depth0) : stack2; }
   buffer += escapeExpression(stack2)
-    + " users</p>\n  </div>\n  ";
+    + " users</p>\n    </div>\n    ";
   return buffer;
   }
 
-  buffer += "<div class=\"module content centered\" id=\""
-    + escapeExpression(((stack1 = ((stack1 = depth0.module),stack1 == null || stack1 === false ? stack1 : stack1.name)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "\">\n  <h2>Users</h2>\n  ";
-  stack2 = helpers['if'].call(depth0, depth0.editableUser, {hash:{},inverse:self.program(4, program4, data),fn:self.program(1, program1, data),data:data});
-  if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "\n</div>\n\n<div id=\"confirmUserRemoveModal\" class=\"modal hide fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">×</button>\n    <h3 class=\"modal-title\"></h3>\n  </div>\n  <div class=\"modal-body\">\n  </div>\n  <div class=\"modal-footer\">\n    <button class=\"closeModal btn\" data-dismiss=\"modal\" aria-hidden=\"true\">Cancel</button>\n    <button class=\"removeUser btn btn-danger\">Remove user</button>\n  </div>\n</div>\n";
+  buffer += "<div class=\"container\">\n  <h1>Users</h1>\n  ";
+  stack1 = helpers['if'].call(depth0, depth0.editableUser, {hash:{},inverse:self.program(4, program4, data),fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n  </div>\n\n  <div id=\"myModal\" class=\"modal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">×</button>\n      <h3 class=\"modal-title\"></h3>\n    </div>\n    <div class=\"modal-body\">\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"closeModal btn\" data-dismiss=\"modal\" aria-hidden=\"true\">Cancel</button>\n      <button class=\"removeUser btn btn-danger\">Remove user</button>\n    </div>\n  </div>\n\n  <div class=\"modal fade\" id=\"confirmUserRemoveModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <div class=\"modal-header\">\n          <button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n          <h4 class=\"modal-title\" id=\"myModalLabel\">Modal title</h4>\n        </div>\n        <div class=\"modal-body\">\n          ...\n        </div>\n        <div class=\"modal-footer\">\n          <button class=\"closeModal btn\" data-dismiss=\"modal\" aria-hidden=\"true\">Cancel</button>\n          <button class=\"removeUser btn btn-danger\">Remove user</button>\n        </div>\n      </div>\n    </div>\n  </div>\n\n</div>\n";
   return buffer;
   });

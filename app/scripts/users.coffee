@@ -87,8 +87,7 @@ class window.Users extends Backbone.Events
 
     # Generates the Futon URL for a given username
     Handlebars.registerHelper 'linkToFutonUser', (userName) ->
-      couchUrl = hoodieAdmin.baseUrl.replace('_api', '_utils')
-      return couchUrl + '/document.html?_users/org.couchdb.user:' + userName
+      return window.location.origin + '/_api/_utils/document.html?_users/org.couchdb.user:' + userName
 
     Handlebars.registerHelper "debug", (optionalValue) ->
       console.log("\nCurrent Context");

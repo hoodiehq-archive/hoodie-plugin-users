@@ -1,14 +1,10 @@
-if (location.hostname is 'localhost' and location.port is "9000")
-  # debug mode, connect to
-  # some existing hoodie app.
-  whereTheMagicHappens = "http://users.dev/_api"
-  whereTheMagicHappens = "http://127.0.0.1:6022/_api"
-  whereTheMagicHappens = "http://127.0.0.1:6015/_api"
-else
-  whereTheMagicHappens = undefined # falls back to default, which is good
-
-
-window.hoodieAdmin = new HoodieAdmin(whereTheMagicHappens)
+window.hoodieAdmin = top.hoodieAdmin
+# Nasty hacks and mocks
+hoodieAdmin.id = -> 'id'
+hoodieAdmin.uuid = -> Math.random().toString()
+# maybe return some random ones from findall
+hoodieAdmin.user.findAll().done ( results )->
+  hoodieAdmin.user.search = -> $.Deferred().resolve(results.slice(0, 10)).promise()
 
 # configure Backbone Layoutmanager
 Backbone.Layout.configure
