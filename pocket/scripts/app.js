@@ -7,7 +7,7 @@
   };
 
   hoodieAdmin.uuid = function() {
-    return Math.random().toString();
+    return Math.random().toString().substr(2);
   };
 
   hoodieAdmin.user.findAll().done(function(results) {
@@ -140,10 +140,17 @@
         console.log("\nCurrent Context");
         console.log("====================");
         console.log(this);
-        if (arguments.length > 1) {
+        if (optionalValue) {
           console.log("Value");
           console.log("====================");
           return console.log(optionalValue);
+        }
+      });
+      Handlebars.registerHelper('inArray', function(haystack, needle, options) {
+        if (haystack.indexOf(needle) !== -1) {
+          return options.fn(this);
+        } else {
+          return options.inverse(this);
         }
       });
       Handlebars.registerHelper('positiveSuccessNegativeWarning', function(value) {
@@ -276,6 +283,7 @@
         }
         _this.totalUsers = users.length;
         _this.users = users;
+        console.log('users: ', users);
         _this.config = $.extend(_this._configDefaults(), object.config);
         _this.editableUser = null;
         switch (users.length) {
@@ -305,7 +313,7 @@
     };
 
     UsersView.prototype.addUser = function(event) {
-      var $btn, $submitMessage, ownerHash, password, username;
+      var $btn, $submitMessage, hoodieId, password, username;
       event.preventDefault();
       $btn = $(event.currentTarget);
       username = $('.addUser .username').val();
@@ -314,12 +322,12 @@
       if (username && password) {
         $btn.attr('disabled', 'disabled');
         $btn.text("Adding " + username + "…");
-        ownerHash = hoodieAdmin.uuid();
+        hoodieId = hoodieAdmin.uuid();
         return hoodieAdmin.user.add('user', {
           id: username,
           name: "user/" + username,
-          ownerHash: ownerHash,
-          database: "user/" + ownerHash,
+          hoodieId: hoodieId,
+          database: "user/" + hoodieId,
           signedUpAt: new Date(),
           roles: [],
           password: password
@@ -474,10 +482,6 @@
         return users.handleConditionalFormElements(el, 0);
       });
       return UsersView.__super__.afterRender.apply(this, arguments);
-    };
-
-    UsersView.prototype.interceptLink = function(event) {
-      return console.log('interceptLink: ', event);
     };
 
     UsersView.prototype._updateModule = function(module) {
@@ -756,22 +760,18 @@ function program15(depth0,data) {
 
 function program17(depth0,data) {
   
-  var buffer = "", stack1;
+  var buffer = "", stack1, stack2, options;
   buffer += "\n            ";
-  stack1 = helpers['if'].call(depth0, depth0.$state, {hash:{},inverse:self.program(20, program20, data),fn:self.program(18, program18, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
+  options = {hash:{},inverse:self.program(20, program20, data),fn:self.program(18, program18, data),data:data};
+  stack2 = ((stack1 = helpers.inArray || depth0.inArray),stack1 ? stack1.call(depth0, depth0.roles, "confirmed", options) : helperMissing.call(depth0, "inArray", depth0.roles, "confirmed", options));
+  if(stack2 || stack2 === 0) { buffer += stack2; }
   buffer += "\n            ";
   return buffer;
   }
 function program18(depth0,data) {
   
-  var buffer = "", stack1;
-  buffer += "\n            ";
-  if (stack1 = helpers.$state) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
-  else { stack1 = depth0.$state; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
-  buffer += escapeExpression(stack1)
-    + "\n            ";
-  return buffer;
+  
+  return "\n            <span class=\"pill success\">confirmed</span>\n            ";
   }
 
 function program20(depth0,data) {
