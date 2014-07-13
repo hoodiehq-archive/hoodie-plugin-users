@@ -368,6 +368,8 @@
       return hoodieAdmin.user.remove(type, id).then(function() {
         $('[data-id="' + id + '"]').remove();
         $('#confirmUserRemoveModal').modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
         return _this.update();
       });
     };
@@ -798,6 +800,6 @@ function program22(depth0,data) {
   buffer += "<div class=\"container\">\n  <h1>Users</h1>\n  ";
   stack1 = helpers['if'].call(depth0, depth0.editableUser, {hash:{},inverse:self.program(4, program4, data),fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n  </div>\n\n  <div id=\"myModal\" class=\"modal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">×</button>\n      <h3 class=\"modal-title\"></h3>\n    </div>\n    <div class=\"modal-body\">\n    </div>\n    <div class=\"modal-footer\">\n      <button class=\"closeModal btn\" data-dismiss=\"modal\" aria-hidden=\"true\">Cancel</button>\n      <button class=\"removeUser btn btn-danger\">Remove user</button>\n    </div>\n  </div>\n\n  <div class=\"modal fade\" id=\"confirmUserRemoveModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <div class=\"modal-header\">\n          <button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n          <h4 class=\"modal-title\" id=\"myModalLabel\">Modal title</h4>\n        </div>\n        <div class=\"modal-body\">\n          ...\n        </div>\n        <div class=\"modal-footer\">\n          <button class=\"closeModal btn\" data-dismiss=\"modal\" aria-hidden=\"true\">Cancel</button>\n          <button class=\"removeUser btn btn-danger\">Remove user</button>\n        </div>\n      </div>\n    </div>\n  </div>\n\n</div>\n";
+  buffer += "\n  </div>\n\n  <div class=\"modal fade\" id=\"confirmUserRemoveModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <div class=\"modal-header\">\n          <button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n          <h4 class=\"modal-title\" id=\"myModalLabel\">Modal title</h4>\n        </div>\n        <div class=\"modal-body\">\n          ...\n        </div>\n        <div class=\"modal-footer\">\n          <button class=\"closeModal btn unobtrusive\" data-dismiss=\"modal\" aria-hidden=\"true\">Cancel</button>\n          <button class=\"removeUser btn danger\">Remove user</button>\n        </div>\n      </div>\n    </div>\n  </div>\n\n</div>\n";
   return buffer;
   });
