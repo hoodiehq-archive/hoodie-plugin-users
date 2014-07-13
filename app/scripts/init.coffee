@@ -2,9 +2,6 @@ window.hoodieAdmin = top.hoodieAdmin
 # Nasty hacks and mocks
 hoodieAdmin.id = -> 'id'
 hoodieAdmin.uuid = -> Math.random().toString().substr(2)
-# maybe return some random ones from findall
-hoodieAdmin.user.findAll().done ( results )->
-  hoodieAdmin.user.search = -> $.Deferred().resolve(results.slice(0, 10)).promise()
 
 # configure Backbone Layoutmanager
 Backbone.Layout.configure

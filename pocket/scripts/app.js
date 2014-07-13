@@ -10,12 +10,6 @@
     return Math.random().toString().substr(2);
   };
 
-  hoodieAdmin.user.findAll().done(function(results) {
-    return hoodieAdmin.user.search = function() {
-      return $.Deferred().resolve(results.slice(0, 10)).promise();
-    };
-  });
-
   Backbone.Layout.configure({
     manage: true,
     fetch: function(path) {
@@ -273,7 +267,7 @@
 
     UsersView.prototype.update = function() {
       var _this = this;
-      return $.when(hoodieAdmin.user.findAll()).then(function(users, object, appConfig) {
+      return hoodieAdmin.user.findAll().then(function(users, object, appConfig) {
         var _base;
         if (object == null) {
           object = {};
