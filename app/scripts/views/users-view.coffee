@@ -18,9 +18,7 @@ class Users.UsersView extends Users.BaseView
     'click .sort-header'                          : 'saveSorting'
 
   update : =>
-    $.when(
-      hoodieAdmin.user.findAll()
-    ).then (users, object = {}, appConfig = {}) =>
+    hoodieAdmin.user.findAll().then (users, object = {}, appConfig = {}) =>
       @totalUsers   = users.length
       @users        = users
       console.log('users: ',users);
@@ -152,7 +150,9 @@ class Users.UsersView extends Users.BaseView
       @resultsDesc  = "Please enter a search term first"
       @render()
       return
+
     hoodieAdmin.user.search(@searchQuery).then (users) =>
+
       @users = users
       switch users.length
         when 0
