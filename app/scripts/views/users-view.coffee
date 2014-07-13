@@ -23,6 +23,7 @@ class Users.UsersView extends Users.BaseView
     ).then (users, object = {}, appConfig = {}) =>
       @totalUsers   = users.length
       @users        = users
+      console.log('users: ',users);
       @config       = $.extend @_configDefaults(), object.config
       @editableUser = null
       switch users.length
@@ -193,9 +194,6 @@ class Users.UsersView extends Users.BaseView
       users.handleConditionalFormElements(el, 0)
 
     super
-
-  interceptLink: (event) ->
-    console.log('interceptLink: ',event);
 
   _updateModule : (module) =>
     module.config.confirmationMandatory     = @$el.find('[name=confirmationMandatory]').is(':checked')

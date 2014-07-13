@@ -94,10 +94,16 @@ class window.Users extends Backbone.Events
       console.log("====================");
       console.log(this);
 
-      if (arguments.length > 1)
+      if (optionalValue)
         console.log("Value");
         console.log("====================");
         console.log(optionalValue);
+
+    Handlebars.registerHelper 'inArray', (haystack, needle, options) ->
+      if haystack.indexOf(needle) isnt -1
+        return options.fn(this);
+      else
+        return options.inverse(this);
 
     # Style Helpers
     # These return class names depending on the value passed

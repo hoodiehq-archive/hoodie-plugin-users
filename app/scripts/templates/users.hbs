@@ -153,11 +153,11 @@
               </div>
             </div>
             {{else}}
-            {{#if $state}}
-            {{$state}}
+            {{#inArray roles 'confirmed'}}
+            <span class="pill success">confirmed</span>
             {{else}}
             <span class="pill warn">unconfirmed</span>
-            {{/if}}
+            {{/inArray}}
             {{/if}}
           </td>
           <td class="no-sort">
