@@ -3,6 +3,7 @@
 /test/browser/emails
 /.tmp
 node_modules
+app/components
 .DS_Store
 .sass-cache
 .tmp
