@@ -121,7 +121,7 @@ module.exports = function (hoodie, callback) {
         if (!email) {
           // no email address for this user
           return hoodie.account.update('$passwordReset', reset_doc.id, {
-            $error: {message: 'No email address found for ' + reset_doc.id}
+            $error: {message: 'No email address found for ' + name}
           }, callback);
         }
         generatePassword(function (err, password) {

@@ -107,4 +107,26 @@ suite('password reset', function () {
       });
   });
 
+  test('reset password - username is not email address', function (done) {
+    this.timeout(20000);
+    hoodie.account.signUp('resetuser2', 'password')
+      .fail(function (err) {
+        assert.ok(false, err.message);
+      })
+      .done(function () {
+        hoodie.account.signOut().done(function () {
+          hoodie.account.resetPassword('resetuser2')
+            .fail(function (err) {
+              assert.ok(
+                /^No email address found for resetuser2$/.test(err.message)
+              );
+              done();
+            })
+            .done(function () {
+              assert.ok(false, 'password reset should fail');
+            });
+        });
+      });
+  });
+
 });
