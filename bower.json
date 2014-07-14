@@ -1,5 +1,6 @@
 {
   "name": "hoodie-plugin-users",
+  "version": "1.0.0",
   "description": "Hoodie Plugin that handles users",
   "url": "https://github.com/hoodiehq/hoodie-plugin-users/",
   "dependencies": {
