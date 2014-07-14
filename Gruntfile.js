@@ -3,7 +3,7 @@ var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
 
 
 var mountFolder = function (connect, dir) {
-  return connect.static(path.resolve(dir));
+  return connect['static'](path.resolve(dir));
 };
 
 
@@ -265,7 +265,7 @@ module.exports = function (grunt) {
         files: {
           '<%= yeoman.dist %>/scripts/app.js': [
             '.tmp/scripts/**/*.js'
-          ],
+          ]
         }
       }
     },
