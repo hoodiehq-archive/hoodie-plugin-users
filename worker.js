@@ -92,13 +92,8 @@ module.exports = function (hoodie, callback) {
     hoodie.account.remove('$passwordReset', reset_doc.id, callback);
   }
 
-  // TODO: unit tests for this
   function getUserEmail(doc) {
-    if (doc.email) {
-      // use explicit email property, if present
-      return doc.email;
-    }
-    else if (/@/.test(doc.id)) {
+    if (/@/.test(doc.id)) {
       // if the user id looks like an email address, use that
       return doc.id;
     }
