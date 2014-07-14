@@ -5,6 +5,7 @@
 
 var removeAccount = require('./lib/remove_account');
 var passwordReset = require('./lib/password_reset');
+var changeUsername = require('./lib/change_username');
 var signUp = require('./lib/signup');
 
 
@@ -17,6 +18,13 @@ module.exports = function (hoodie, callback) {
   hoodie.account.on('user:change', function (doc) {
     if (doc._deleted) {
       removeAccount(hoodie, doc);
+    }
+    else if (doc.$error) {
+      // don't do any further processing to user docs with $error
+      return;
+    }
+    else if (doc.$newUsername) {
+      changeUsername(hoodie, doc);
     }
     else if (!signUp.isConfirmed(doc)) {
       signUp(hoodie, doc);
