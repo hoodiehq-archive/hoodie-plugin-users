@@ -87,18 +87,23 @@ class window.Users extends Backbone.Events
 
     # Generates the Futon URL for a given username
     Handlebars.registerHelper 'linkToFutonUser', (userName) ->
-      couchUrl = hoodieAdmin.baseUrl.replace('_api', '_utils')
-      return couchUrl + '/document.html?_users/org.couchdb.user:' + userName
+      return window.location.origin + '/_api/_utils/document.html?_users/org.couchdb.user:' + userName
 
     Handlebars.registerHelper "debug", (optionalValue) ->
       console.log("\nCurrent Context");
       console.log("====================");
       console.log(this);
 
-      if (arguments.length > 1)
+      if (optionalValue)
         console.log("Value");
         console.log("====================");
         console.log(optionalValue);
+
+    Handlebars.registerHelper 'inArray', (haystack, needle, options) ->
+      if haystack.indexOf(needle) isnt -1
+        return options.fn(this);
+      else
+        return options.inverse(this);
 
     # Style Helpers
     # These return class names depending on the value passed

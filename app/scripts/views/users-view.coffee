@@ -1,27 +1,27 @@
 class Users.UsersView extends Users.BaseView
   template: 'users'
   sort: undefined
-  sortBy: undefined
-  sortDirection: undefined
+  sortBy: 'signupDate'
+  sortDirection: 'sort-up'
+  blockSorting: false
 
   events :
     'submit form.config'                          : 'updateConfig'
-    'submit form.form-search'                     : 'search'
+    'submit form.userSearch'                      : 'search'
     'submit form.updatePassword'                  : 'updatePassword'
     'submit form.updateUsername'                  : 'updateUsername'
+    'submit form.addUser'                         : 'addUser'
     'click .addUser button[type="submit"]'        : 'addUser'
     'click .user a.removeUserPrompt'              : 'removeUserPrompt'
     'click #confirmUserRemoveModal .removeUser'   : 'removeUser'
     'click .clearSearch'                          : 'clearSearch'
+    'click .sort-header'                          : 'saveSorting'
 
   update : =>
-    $.when(
-      hoodieAdmin.users.findAll()
-      # hoodieAdmin.modules.find('users'),
-      #hoodieAdmin.config.get()
-    ).then (users, object = {}, appConfig = {}) =>
+    hoodieAdmin.user.findAll().then (users, object = {}, appConfig = {}) =>
       @totalUsers   = users.length
       @users        = users
+      console.log('users: ',users);
       @config       = $.extend @_configDefaults(), object.config
       @editableUser = null
       switch users.length
@@ -47,32 +47,43 @@ class Users.UsersView extends Users.BaseView
   addUser : (event) ->
     event.preventDefault()
     $btn = $(event.currentTarget);
-    username = $btn.closest('form').find('.username').val()
-    password = $btn.closest('form').find('.password').val()
+    username = $('.addUser .username').val()
+    password = $('.addUser .password').val()
+    $submitMessage = $btn.siblings('.submitMessage')
     if(username and password)
       $btn.attr('disabled', 'disabled')
-      $btn.siblings('.submitMessage').text("Adding #{username}…")
+      $btn.text("Adding #{username}…")
 
-      ownerHash = hoodieAdmin.uuid()
-      hoodieAdmin.users.add('user', {
+      hoodieId = hoodieAdmin.uuid()
+      hoodieAdmin.user.add('user', {
         id : username
         name : "user/#{username}"
-        ownerHash : ownerHash
-        database : "user/#{ownerHash}"
+        hoodieId : hoodieId
+        database : "user/#{hoodieId}"
         signedUpAt : new Date()
         roles : []
         password : password
       })
-      .done(@update)
+      .done(@onAddUser)
       .fail (data) ->
         console.log "could not add user: ", data
         $btn.attr('disabled', null)
-        if data.statusText is "Conflict"
-          $btn.siblings('.submitMessage').text("Sorry, '#{username}' already exists")
+        if data.name is "HoodieConflictError"
+          $submitMessage.text("Sorry, '#{username}' already exists")
         else
-          $btn.siblings('.submitMessage').text("Error: "+data.status+" - "+data.responseText)
+          $submitMessage.text("Error: "+data.status+" - "+data.responseText)
+        $btn.text("Add user")
+        $btn.attr('disabled', null)
     else
-      $btn.siblings('.submitMessage').text("Please enter a username and a password")
+      $submitMessage.text("Please enter a username and a password")
+
+  onAddUser: (event) =>
+    $('.addUser .username').val("")
+    $('.addUser .password').val("")
+    $btn = $('form.addUser button').text("Add user").attr('disabled', null)
+    $('form.addUser .submitMessage').text("Added new user.")
+    @update()
+    return
 
   removeUserPrompt : (event) =>
     event.preventDefault()
@@ -91,13 +102,16 @@ class Users.UsersView extends Users.BaseView
     event.preventDefault()
     id = $('#confirmUserRemoveModal').data('id');
     type = $('#confirmUserRemoveModal').data('type');
-    hoodieAdmin.users.remove(type, id).then =>
+    hoodieAdmin.user.remove(type, id).then =>
       $('[data-id="'+id+'"]').remove()
+      # Because bootstrap
       $('#confirmUserRemoveModal').modal('hide')
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').remove();
       @update()
 
   editUser : (id) ->
-    $.when(hoodieAdmin.users.find('user', id)).then (user) =>
+    $.when(hoodieAdmin.user.find('user', id)).then (user) =>
       @editableUser = user
       @render()
       return
@@ -119,7 +133,7 @@ class Users.UsersView extends Users.BaseView
     if password
       $btn.attr('disabled', 'disabled')
       $form.find('.submitMessage').text("Updating password")
-      hoodieAdmin.users.update('user', id, {password: password})
+      hoodieAdmin.user.update('user', id, {password: password})
       .done (data) ->
         $btn.attr('disabled', null)
         $form.find('.submitMessage').text("Password updated")
@@ -136,9 +150,9 @@ class Users.UsersView extends Users.BaseView
       @resultsDesc  = "Please enter a search term first"
       @render()
       return
-    $.when(
-      hoodieAdmin.users.search(@searchQuery)
-    ).then (users) =>
+
+    hoodieAdmin.user.search(@searchQuery).then (users) =>
+
       @users = users
       switch users.length
         when 0
@@ -154,18 +168,14 @@ class Users.UsersView extends Users.BaseView
     @searchQuery = null
     @update()
 
-  beforeRender : =>
-    @sortBy = $('#userList .sort-up, #userList .sort-down').data('sort-by')
-    # get previous sorting parameters…
-    if @sortBy
-      @sortDirection = 'sort-down'
-      if $('#userList .sort-up').length isnt 0
-        @sortDirection = 'sort-up'
-    else
-      # …or set defaults
-      @sortBy = "signupDate"
-      @sortDirection = "sort-up"
-    super
+  saveSorting: (event) ->
+    unless @blockSorting
+      # get previous sorting parameters…
+      @sortBy = $('#userList .sort-up, #userList .sort-down').data('sort-by')
+      if @sortBy
+        @sortDirection = 'sort-down'
+        if $('#userList .sort-up').length isnt 0
+          @sortDirection = 'sort-up'
 
   afterRender : =>
     userList = document.getElementById('userList')
@@ -173,10 +183,12 @@ class Users.UsersView extends Users.BaseView
       @sort = new Tablesort(userList);
       # sort by previous sorting parameters.
       # Bit hacky, because tablesort has no api for this
+      @blockSorting = true
       sortHeader = $('#userList [data-sort-by="'+@sortBy+'"]')
       sortHeader.click()
       if @sortDirection is 'sort-up'
         sortHeader.click()
+      @blockSorting = false
     # Deal with all conditional form elements once after rendering the form
     @$el.find('.formCondition').each (index, el) ->
       users.handleConditionalFormElements(el, 0)

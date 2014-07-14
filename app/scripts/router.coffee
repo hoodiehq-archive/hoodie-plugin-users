@@ -4,6 +4,9 @@ class Users.Router extends Backbone.Router
     ""              : "default"
     "user/:id"      : "editUser"
 
+  initialize: ->
+    users.router = this
+
   default: ->
     users.app.views.body.update()
 
