@@ -73,8 +73,7 @@ module.exports = function (grunt) {
       test: {
         options: {
           dir: path.resolve(__dirname, 'test/browser/emails'),
-          port: 8888//,
-          //whitelist: ['resetuser@example.com']
+          port: 8888
         }
       }
     },

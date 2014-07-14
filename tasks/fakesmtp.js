@@ -10,7 +10,6 @@ module.exports = function (grunt) {
     var options = this.options({
       dir: 'emails',
       port: 8888,
-      whitelist: null,
       keepalive: false
     });
     if (!fs.existsSync(options.dir)) {
@@ -40,13 +39,7 @@ module.exports = function (grunt) {
           fs.writeFileSync(filename, JSON.stringify(data, null, 4));
         });
       });
-      if (options.whitelist === null ||
-          options.whitelist.indexOf(email.to) !== -1) {
-        req.accept();
-      }
-      else {
-        req.reject('recipient not in the whitelist');
-      }
+      req.accept();
     });
     smtp.listen(options.port, function(err) {
       if (err) {
