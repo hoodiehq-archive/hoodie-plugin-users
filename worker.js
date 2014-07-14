@@ -83,8 +83,10 @@ module.exports = function (hoodie, callback) {
           $error: {message: 'Failed to send password reset email'}
         }, callback);
       }
-      // all done
-      return callback();
+      else {
+        // all done
+        removeResetPassword(reset_doc, callback);
+      }
     });
   };
 
@@ -131,8 +133,7 @@ module.exports = function (hoodie, callback) {
           var username = user.id;
           async.series([
             setPassword.bind(null, user, password),
-            sendPassword.bind(null, reset_doc, email, username, password),
-            removeResetPassword.bind(null, reset_doc)
+            sendPassword.bind(null, reset_doc, email, username, password)
           ],
           callback);
         });

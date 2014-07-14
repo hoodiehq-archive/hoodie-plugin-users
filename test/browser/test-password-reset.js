@@ -130,3 +130,78 @@ suite('password reset', function () {
   });
 
 });
+
+suite('password reset - SMTP server down', function () {
+
+  setup(function (done) {
+    this.timeout(10000);
+    // phantomjs seems to keep session data between runs,
+    // so clear before running tests
+    localStorage.clear();
+    // log in as admin
+    $.ajax({
+      type: 'POST',
+      url: '/_api/_session',
+      contentType: 'application/json',
+      data: JSON.stringify({name: 'admin', password: 'testing'}, null, 4),
+      processData: false
+    })
+    .fail(function (err) {
+      assert.ok(false, err.message);
+    })
+    .done(function () {
+      // update app config to point to fake smtp server for testing,
+      // the mail server writes recieved messages to files in www/emails
+      $.getJSON('/_api/app/config')
+        .fail(function (err) {
+          assert.ok(false, err.message);
+        })
+        .done(function (doc) {
+          doc.config.email_host = 'not-a-real-host-87632184687216498214',
+          doc.config.email_port = 9898;
+          doc.config.email_secure = false;
+          delete doc.config.email_user;
+          delete doc.config.email_pass;
+          delete doc.config.email_service;
+          $.ajax({
+            type: 'PUT',
+            url: '/_api/app/config',
+            contentType: 'application/json',
+            data: JSON.stringify(doc, null, 4),
+            processData: false
+          })
+          .fail(function (err) {
+            assert.ok(false, err.message);
+          })
+          .done(function (res) {
+            hoodie.account.signOut().done(function () {
+              done();
+            });
+          });
+        });
+    });
+  });
+
+  test('reset password - fail to send email', function (done) {
+    this.timeout(20000);
+    hoodie.account.signUp('resetuser3@example.com', 'password')
+      .fail(function (err) {
+        assert.ok(false, err.message);
+      })
+      .done(function () {
+        hoodie.account.signOut().done(function () {
+          hoodie.account.resetPassword('resetuser3@example.com')
+            .fail(function (err) {
+              assert.ok(
+                /^Failed to send password reset email$/.test(err.message)
+              );
+              done();
+            })
+            .done(function () {
+              assert.ok(false, 'password reset should fail');
+            });
+        });
+      });
+  });
+
+});
