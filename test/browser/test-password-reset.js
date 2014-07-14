@@ -53,7 +53,7 @@ suite('password reset', function () {
     this.timeout(10000);
     hoodie.account.resetPassword('userdoesnotexist')
       .fail(function (err) {
-        assert.ok(/user userdoesnotexist could not be found/.test(err.message));
+        assert.ok(/^User could not be found$/.test(err.message));
         assert.equal(err.error, 'not_found');
         done();
       })
@@ -118,7 +118,7 @@ suite('password reset', function () {
           hoodie.account.resetPassword('resetuser2')
             .fail(function (err) {
               assert.ok(
-                /^No email address found for resetuser2$/.test(err.message)
+                /^No email address found$/.test(err.message)
               );
               done();
             })

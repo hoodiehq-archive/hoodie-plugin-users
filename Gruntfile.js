@@ -12,7 +12,8 @@ module.exports = function (grunt) {
       files: [
         'Gruntfile.js',
         'hoodie.template.js',
-        'worker.js',
+        'index.js',
+        'lib/*.js',
         'hooks/*.js'
       ],
       options: {
