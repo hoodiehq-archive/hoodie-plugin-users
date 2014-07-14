@@ -1,5 +1,7 @@
 # Hoodie Users Plugin
 [![Build Status](https://travis-ci.org/hoodiehq/worker-users.svg?branch=master)](https://travis-ci.org/hoodiehq/worker-users)
+[![Dependency Status](https://david-dm.org/hoodiehq/hoodie-plugin-users.svg)](https://david-dm.org/hoodiehq/hoodie-plugin-users)
+[![devDependency Status](https://david-dm.org/hoodiehq/hoodie-plugin-users/dev-status.svg)](https://david-dm.org/hoodiehq/hoodie-plugin-users#info=devDependencies)
 
 This plugin is used internally by [hoodie-server].
 It picks up user sign ups, creates user databases and handles password resets.
