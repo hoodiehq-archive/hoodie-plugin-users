@@ -1,5 +1,4 @@
 var path = require('path');
-var matchdep = require('matchdep');
 var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
 
 
@@ -33,7 +32,7 @@ module.exports = function (grunt) {
           'admin-dashboard'
         ]
       }
-    }
+    },
 
     // specify an alternate install location for Bower
     bower: {
@@ -141,7 +140,7 @@ module.exports = function (grunt) {
         sassDir: 'app/styles',
         cssDir: '.tmp/styles',
         imagesDir: 'app/images',
-        javascriptsDir: 'ap/scripts',
+        javascriptsDir: 'app/scripts',
         importPath: 'app/components',
         relativeAssets: true
       },
@@ -406,8 +405,8 @@ module.exports = function (grunt) {
           processName: function (filename) {
             // funky name processing here
             return filename
-                    .replace(/^app\/scripts\/templates\//, '')
-                    .replace(/\.hbs$/, '');
+              .replace(/^app\/scripts\/templates\//, '')
+              .replace(/\.hbs$/, '');
           }
         }
       }
@@ -416,7 +415,7 @@ module.exports = function (grunt) {
   });
 
   // load all grunt tasks
-  matchdep.filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+  require('load-grunt-tasks')(grunt);
 
   // custom tasks
   grunt.loadTasks('./tasks');
