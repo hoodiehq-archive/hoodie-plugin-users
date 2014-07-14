@@ -1,3 +1,6 @@
+var path = require('path');
+
+
 module.exports = function (grunt) {
 
   // Project configuration.
@@ -33,7 +36,10 @@ module.exports = function (grunt) {
 
     shell: {
       removeData: {
-        command: 'rm -rf ' + require('path').resolve(__dirname, 'data')
+        command: 'rm -rf ' + path.resolve(__dirname, 'data')
+      },
+      removeEmails: {
+        command: 'rm -rf ' + path.resolve(__dirname, 'test/browser/emails')
       },
       npmLink: {
         command: 'npm link && npm link <%= pkg.name %>'
@@ -63,6 +69,16 @@ module.exports = function (grunt) {
       }
     },
 
+    fakesmtp: {
+      test: {
+        options: {
+          dir: path.resolve(__dirname, 'test/browser/emails'),
+          port: 8888//,
+          //whitelist: ['resetuser@example.com']
+        }
+      }
+    },
+
     env: {
       test: {
         HOODIE_SETUP_PASSWORD: 'testing'
@@ -82,6 +98,9 @@ module.exports = function (grunt) {
 
   });
 
+  // custom tasks
+  grunt.loadTasks('./tasks');
+
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-browser');
@@ -95,8 +114,10 @@ module.exports = function (grunt) {
   grunt.registerTask('test:browser', [
     'env:test',
     'shell:removeData',
+    'shell:removeEmails',
     'shell:npmLink',
     'shell:installPlugin',
+    'fakesmtp:test',
     'hoodie',
     'continueOn',
     'mocha_browser:all',

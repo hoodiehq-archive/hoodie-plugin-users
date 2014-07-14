@@ -57,17 +57,17 @@ module.exports = function (hoodie, callback) {
     });
   }
 
-  var setPassword = _.curry(function (doc, password, callback) {
-    hoodie.account.update('user', doc.id, {password: password}, callback);
+  var setPassword = _.curry(function (user, password, callback) {
+    hoodie.account.update('user', user.id, {password: password}, callback);
   });
 
-  var sendPassword = function (doc, recipient, password, callback) {
+  var sendPassword = function (reset_doc, recipient, username, password, callback) {
     var app_name = hoodie.config.get('app_name');
     var sender = hoodie.config.get('email_from');
     var email = {
       to: recipient,
       from: sender,
-      subject: '[' + app_name + '] New password' ,
+      subject: '[' + app_name + '] New password',
       text: 'Hey there,\n' +
             '\n' +
             'You can now sign in to your ' + app_name + ' account using:\n' +
@@ -79,17 +79,17 @@ module.exports = function (hoodie, callback) {
     };
     hoodie.sendEmail(email, function (err) {
       if (err) {
-        return hoodie.account.update('$passwordReset', doc.id, {
+        return hoodie.account.update('$passwordReset', reset_doc.id, {
           $error: {message: 'Failed to send password reset email'}
-        }, callback)
+        }, callback);
       }
       // all done
       return callback();
     });
   };
 
-  function removeResetPassword(doc, callback) {
-    hoodie.account.remove('$passwordReset', doc.id, callback);
+  function removeResetPassword(reset_doc, callback) {
+    hoodie.account.remove('$passwordReset', reset_doc.id, callback);
   }
 
   // TODO: unit tests for this
@@ -106,14 +106,13 @@ module.exports = function (hoodie, callback) {
     return null;
   }
 
-  function passwordReset(doc, callback) {
-    var parts = doc.name.split('/');
+  function passwordReset(reset_doc, callback) {
+    var parts = reset_doc.name.split('/');
     var name = parts[1];
-    var id =  name + '/' + parts[2];
 
     hoodie.account.find('user', name, function (err, user) {
       if (err) {
-        hoodie.account.update('$passwordReset', id, {
+        hoodie.account.update('$passwordReset', reset_doc.id, {
           $error: {
             error: 'not_found',
             message: util.format('user %s could not be found', name)
@@ -123,21 +122,22 @@ module.exports = function (hoodie, callback) {
       }
       else {
         // do the password reset
-        var email = getUserEmail(doc);
+        var email = getUserEmail(user);
         if (!email) {
           // no email address for this user
-          return hoodie.account.update('$passwordReset', doc.id, {
-            $error: {message: 'No email address found for ' + doc.id}
-          }, callback)
+          return hoodie.account.update('$passwordReset', reset_doc.id, {
+            $error: {message: 'No email address found for ' + reset_doc.id}
+          }, callback);
         }
         generatePassword(function (err, password) {
           if (err) {
             return callback(err);
           }
+          var username = user.id;
           async.series([
-            setPassword.bind(null, doc, password),
-            sendPassword.bind(null, doc, email, password),
-            removeResetPassword.bind(null, doc)
+            setPassword.bind(null, user, password),
+            sendPassword.bind(null, reset_doc, email, username, password),
+            removeResetPassword.bind(null, reset_doc)
           ],
           callback);
         });
@@ -164,7 +164,6 @@ module.exports = function (hoodie, callback) {
    */
 
   hoodie.account.on('user:change', function (doc) {
-    console.log(['user:change', doc]);
     if (doc._deleted) {
       deleteUserDB(doc, logErrors('Error deleting user db'));
     }
@@ -176,7 +175,6 @@ module.exports = function (hoodie, callback) {
   });
 
   hoodie.account.on('$passwordReset:change', function (doc) {
-    console.log(['$passwordReset:change', doc]);
     if (!doc._deleted && !doc.$error) {
       passwordReset(doc, logErrors('Error resetting password'));
     }
