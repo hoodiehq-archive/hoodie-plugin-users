@@ -91,7 +91,7 @@ module.exports = function (grunt) {
         tasks: 'jshint'
       },
       unittest: {
-        files: 'worker.js',
+        files: ['index.js', 'lib/*.js'],
         tasks: 'test:unit'
       }
     }

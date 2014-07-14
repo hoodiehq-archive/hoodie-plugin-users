@@ -76,4 +76,48 @@ suite('change username', function () {
       });
   });
 
+  test('data carried over to new account', function (done) {
+    this.timeout(10000);
+    hoodie.account.signUp('changename5', 'password')
+      .fail(function (err) {
+        assert.ok(false, err.message);
+      })
+      .done(function (data) {
+        hoodie.store.add('example', {id: 'foo', title: 'bar'})
+          .then(function () {
+            return hoodie.account.changeUsername('password', 'changename6')
+          })
+          .then(function () {
+            return hoodie.account.signOut()
+          })
+          .then(function () {
+            return hoodie.account.signIn('changename6', 'password');
+          })
+          .fail(function (err) {
+            assert.ok(false, err.message);
+          })
+          .done(function () {
+            assert.equal(hoodie.account.username, 'changename6');
+            hoodie.store.find('example', 'foo')
+              .fail(function (err) {
+                assert.ok(false, err.message);
+              })
+              .done(function (data) {
+                assert.equal(data.title, 'bar');
+                var id = hoodie.id();
+                $.getJSON('/_api/user%2F' + id + '/example%2Ffoo')
+                  .fail(function (err) {
+                    assert.ok(
+                      false, 'failed to get user/' + id + ' example/foo doc'
+                    );
+                  })
+                  .done(function (data2) {
+                    assert.equal(data2.title, 'bar');
+                    done();
+                  });
+              });
+          });
+      });
+  });
+
 });

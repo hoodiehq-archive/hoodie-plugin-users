@@ -16,12 +16,12 @@ module.exports = function (hoodie, callback) {
    */
 
   hoodie.account.on('user:change', function (doc) {
-    if (doc._deleted) {
-      removeAccount(hoodie, doc);
-    }
-    else if (doc.$error) {
+    if (doc.$error) {
       // don't do any further processing to user docs with $error
       return;
+    }
+    else if (doc._deleted && !doc.$newUsername) {
+      removeAccount(hoodie, doc);
     }
     else if (doc.$newUsername) {
       changeUsername(hoodie, doc);
