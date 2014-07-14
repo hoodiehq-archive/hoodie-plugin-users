@@ -6,7 +6,7 @@ Hoodie Users Plugin
 This plugin is used internally by [hoodie-server].
 It picks up user sign ups, creates user databases and handles password resets.
 
-Besides that it also provides a view for pocket to manage the users of your app.
+Besides that it also provides a view for Admin Dashboard to manage the users of your app.
 
 
 How things work behind the curtain
@@ -75,11 +75,11 @@ Anonymous users
 
 Hoodie can be used entirely without accounts. That usually means, that data gets only stored in the user's
 browser. There are cases though when data needs to be synchronized to CouchDB, for example when an anonymous
-user wants to send an email, share data or do any different kind background tasks. You might also decide as an 
+user wants to send an email, share data or do any different kind background tasks. You might also decide as an
 app developer that you want to store data of anonymous users to prevent data loss.
 
-To create an account for an anonymous user and to kick off data synchronization, you can use 
-`hoodie.account.anonymousSignUp()`. This will create a doc in `_users` that looks similar to what 
+To create an account for an anonymous user and to kick off data synchronization, you can use
+`hoodie.account.anonymousSignUp()`. This will create a doc in `_users` that looks similar to what
 `hoodie.account.signUp(username, password)` generates:
 
 ```json

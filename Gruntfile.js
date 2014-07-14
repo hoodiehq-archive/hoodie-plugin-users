@@ -15,7 +15,7 @@ module.exports = function( grunt ) {
   var yeomanConfig = {
       app:  'app',
       temp: '.tmp',
-      dist: 'pocket'
+      dist: 'admin-dashboard'
   };
 
   //
@@ -297,7 +297,7 @@ module.exports = function( grunt ) {
 
     // renames JS/CSS to prepend a hash of their contents for easier
     // versioning
-    // Hoodie pocket: referenced invalid image path so images don't get renamed
+    // Hoodie admin-dashboard: referenced invalid image path so images don't get renamed
     // Workaround for: https://github.com/yeoman/yeoman/issues/824
     rev: {
       js: 'scripts/**/*.js',
@@ -337,7 +337,7 @@ module.exports = function( grunt ) {
           ]
         },
         options: {
-          // namespace: 'pocket.Templates',
+          // namespace: 'admin-dashboard.Templates',
           namespace: 'JST',
           processName: function(filename) {
             // funky name processing here
