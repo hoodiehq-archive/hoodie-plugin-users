@@ -1,7 +1,5 @@
-[![Build Status](https://travis-ci.org/hoodiehq/worker-users.png?branch=master)](https://travis-ci.org/hoodiehq/worker-users)
-
-Hoodie Users Plugin
-===================
+# Hoodie Users Plugin
+[![Build Status](https://travis-ci.org/hoodiehq/worker-users.svg?branch=master)](https://travis-ci.org/hoodiehq/worker-users)
 
 This plugin is used internally by [hoodie-server].
 It picks up user sign ups, creates user databases and handles password resets.

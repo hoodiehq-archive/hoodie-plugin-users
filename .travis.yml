@@ -1,10 +1,25 @@
 language: node_js
 node_js:
-  - "0.10"
-  - "0.8"
+- '0.10'
+before_install:
+- npm install -g grunt-cli bower
+- bower install
+after_success:
+- grunt ghrelease
 notifications:
-  irc: 
+  irc:
     channels:
-      - "chat.freenode.net#hoodie"
+    - 'chat.freenode.net#hoodie'
   use_notice: true
   skip_join: true
+deploy:
+  provider: npm
+  email: stephan@thehoodiefirm.com
+  api_key:
+    secure: CNqeZFZqDdUXbiqhQTOMV9W2D+nsWTTX6UqobNoXVzodJd8ZoCDeEd1mrvxsnyvjBZu+gaGitwcpkjl9XSMLZ0R9LBXmliJ2WosQoPlChq18+EqpAMk/oUcLn6vwMZfoO3AemlmLo4/eG6ycLD6U23BfS0P8EuazTStYcxTpwP0=
+  on:
+    all_branches: true
+    tags: true
+env:
+  global:
+  - secure: Y5HwT1qYW9oLnwzjYyrW6xifBmFNfmfnDsJK6GtbKVCqIxiSWUPizfyMHbgxLZxE279ttAJKfyKo6pJVuKle/H5fBIsKE1zzxxYciv98g4I49ARLXuIeUE8lIEBvzpWFe7Nu69o/zDmFMpID8pNuwBlI+yZBogAuNYZGQEFMjnY=
