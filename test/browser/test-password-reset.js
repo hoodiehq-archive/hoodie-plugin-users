@@ -101,7 +101,7 @@ suite('password reset', function () {
                         done();
                       });
                   });
-              }, 1000);
+              }, 2000);
             });
         });
       });

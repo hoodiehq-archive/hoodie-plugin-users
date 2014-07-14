@@ -36,7 +36,7 @@ suite('create user db', function () {
             assert.ok(false, err.message);
           })
           .done(function (doc) {
-            hoodie.store.on('sync', function () {
+            setTimeout(function () {
               $.getJSON('/_api/user%2F' + hoodie.id() + '/example%2F' + doc.id)
                 .fail(function (err) {
                   assert.ok(false, JSON.stringify(err));
@@ -45,7 +45,7 @@ suite('create user db', function () {
                   assert.equal(data.title, 'foo');
                   done();
                 });
-            });
+            }, 3000);
           });
       });
   });

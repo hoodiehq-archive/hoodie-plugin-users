@@ -34,9 +34,9 @@ suite('change username', function () {
               assert.ok(false, err.message);
             })
             .done(function () {
-              $.getJSON('/_api/_users/org.couchdb.user:user%2Fchangename1')
+              $.getJSON('/_api/_users/org.couchdb.user%3Auser%2Fchangename1')
                 .fail(function (err) {
-                  $.getJSON('/_api/_users/org.couchdb.user:user%2Fchangename2')
+                  $.getJSON('/_api/_users/org.couchdb.user%3Auser%2Fchangename2')
                     .fail(function (err) {
                       assert.ok(false, err.message);
                     })
@@ -76,13 +76,14 @@ suite('change username', function () {
       });
   });
 
-  test('data carried over to new account', function (done) {
+  test('data and hoodieId carried over to new account', function (done) {
     this.timeout(10000);
     hoodie.account.signUp('changename5', 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
       })
       .done(function (data) {
+        var old_hoodie_id = hoodie.id();
         hoodie.store.add('example', {id: 'foo', title: 'bar'})
           .then(function () {
             return hoodie.account.changeUsername('password', 'changename6')
@@ -104,17 +105,8 @@ suite('change username', function () {
               })
               .done(function (data) {
                 assert.equal(data.title, 'bar');
-                var id = hoodie.id();
-                $.getJSON('/_api/user%2F' + id + '/example%2Ffoo')
-                  .fail(function (err) {
-                    assert.ok(
-                      false, 'failed to get user/' + id + ' example/foo doc'
-                    );
-                  })
-                  .done(function (data2) {
-                    assert.equal(data2.title, 'bar');
-                    done();
-                  });
+                assert.equal(hoodie.id(), old_hoodie_id);
+                done();
               });
           });
       });

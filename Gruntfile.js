@@ -130,7 +130,6 @@ module.exports = function (grunt) {
   grunt.registerTask('default', []);
   grunt.registerTask('start', [
     'env:test',
-    'shell:removeData',
     'shell:npmLink',
     'shell:installPlugin',
     'hoodie'
