@@ -503,4 +503,6 @@ module.exports = function (grunt) {
     'usemin'
   ]);
 
+  grunt.registerTask('ci', ['integration-test']);
+
 };
