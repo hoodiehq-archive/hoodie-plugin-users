@@ -15,7 +15,7 @@ module.exports = function (hoodie, callback) {
    * Event handlers
    */
 
-  hoodie.account.on('user:change', function (doc) {
+  function userChange(doc) {
     if (doc.$error) {
       // don't do any further processing to user docs with $error
       return;
@@ -29,7 +29,10 @@ module.exports = function (hoodie, callback) {
     else if (!signUp.isConfirmed(doc)) {
       signUp(hoodie, doc);
     }
-  });
+  }
+
+  hoodie.account.on('user:change', userChange);
+  hoodie.account.on('user_anonymous:change', userChange);
 
   hoodie.account.on('$passwordReset:change', function (doc) {
     if (!doc._deleted && !doc.$error) {
