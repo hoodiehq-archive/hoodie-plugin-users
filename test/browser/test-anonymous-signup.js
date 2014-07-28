@@ -18,7 +18,6 @@ suite('create anonymous user db', function () {
           assert.ok(false, err.message);
         })
         .done(function (data) {
-          console.log(['anonymous user alldbs', data]);
           var dbname = 'user/' + hoodie.id();
           assert.notEqual(data.indexOf(dbname), -1);
           $.getJSON('/_api/' + encodeURIComponent(dbname) + '/_all_docs?' +
@@ -29,7 +28,6 @@ suite('create anonymous user db', function () {
             assert.ok(false, err.message);
           })
           .done(function (data) {
-            console.log(['anonymous user data', data]);
             assert.equal(data.rows[0].doc.title, 'foo');
             done();
           });
