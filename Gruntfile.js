@@ -23,19 +23,6 @@ module.exports = function (grunt) {
 
     yeoman: yeomanConfig,
 
-    release: {
-      options: {
-        bump: {
-          commitFiles: [
-            'package.json',
-            'bower.json',
-            'CHANGELOG.md',
-            'admin-dashboard'
-          ]
-        }
-      }
-    },
-
     // specify an alternate install location for Bower
     bower: {
       dir: 'app/components'

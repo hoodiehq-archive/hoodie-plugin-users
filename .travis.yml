@@ -4,22 +4,24 @@ node_js:
 before_install:
 - npm install -g grunt-cli bower
 - bower install
-after_success:
-- grunt ghrelease
 notifications:
   irc:
     channels:
-    - 'chat.freenode.net#hoodie'
+    - chat.freenode.net#hoodie
   use_notice: true
   skip_join: true
 deploy:
   provider: npm
   email: stephan@thehoodiefirm.com
-  api_key:
-    secure: CNqeZFZqDdUXbiqhQTOMV9W2D+nsWTTX6UqobNoXVzodJd8ZoCDeEd1mrvxsnyvjBZu+gaGitwcpkjl9XSMLZ0R9LBXmliJ2WosQoPlChq18+EqpAMk/oUcLn6vwMZfoO3AemlmLo4/eG6ycLD6U23BfS0P8EuazTStYcxTpwP0=
   on:
     all_branches: true
     tags: true
+  api_key:
+    secure: zR8Ajapr0q7kQngtPHNduxeQFPhtt9txalgoP+JX1yGJXRNBFCWos3qdD6XZQ6HKfSMA366pZWluSIXxjXu6AKv6ljFmpKzS+uQnJi87ifik5OmEej8aWzNY17ddvlTKZFyM2RL21f4lKpjGbaS02kYR6bxxlaE4DFkva7bT/eE=
 env:
   global:
-  - secure: Y5HwT1qYW9oLnwzjYyrW6xifBmFNfmfnDsJK6GtbKVCqIxiSWUPizfyMHbgxLZxE279ttAJKfyKo6pJVuKle/H5fBIsKE1zzxxYciv98g4I49ARLXuIeUE8lIEBvzpWFe7Nu69o/zDmFMpID8pNuwBlI+yZBogAuNYZGQEFMjnY=
+  - secure: A2PGKcshD1Q+r6sbwmXusMgvZHAWBI/Vg8xMuoHC7Dw8xejMcs4VjDeMTrkXCotylTTyv+K44/DMAKohdmI/ajWh9zVtwdkYRXBG8bk4Y6TaIPvJ4fm7iBvR0l4XB/SQrpJjJTBhqkGxAnCP7tBjP952EbxkPjZGNHOEd305buU=
+before_deploy:
+- grunt before-deploy
+after_deploy:
+- grunt after-deploy
