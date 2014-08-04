@@ -17,31 +17,33 @@ suite('delete user db on account.destroy', function () {
       })
       .done(function () {
         var dburl = '/_api/user%2F' + hoodie.id();
-        $.getJSON(dburl)
-          .fail(function (err) {
-            assert.ok(false, JSON.stringify(err));
-          })
-          .done(function (data) {
-            assert.ok(data.db_name, 'get db info');
-            hoodie.account.destroy()
-              .fail(function (err) {
-                assert.ok(false, '' + err);
-              })
-              .done(function () {
-                setTimeout(function () {
-                  $.ajax({
-                    type: 'GET',
-                    url: dburl,
-                    dataType: 'json',
-                    complete: function (req) {
-                      // db should have been deleted
-                      assert.equal(req.status, 404);
-                      done();
-                    }
-                  });
-                }, 1000);
-              });
-          });
+        setTimeout(function () {
+          $.getJSON(dburl)
+            .fail(function (err) {
+              assert.ok(false, JSON.stringify(err));
+            })
+            .done(function (data) {
+              assert.ok(data.db_name, 'get db info');
+              hoodie.account.destroy()
+                .fail(function (err) {
+                  assert.ok(false, '' + err);
+                })
+                .done(function () {
+                  setTimeout(function () {
+                    $.ajax({
+                      type: 'GET',
+                      url: dburl,
+                      dataType: 'json',
+                      complete: function (req) {
+                        // db should have been deleted
+                        assert.equal(req.status, 404);
+                        done();
+                      }
+                    });
+                  }, 1000);
+                });
+            });
+        }, 1000);
       });
   });
 
