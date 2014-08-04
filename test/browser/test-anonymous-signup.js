@@ -50,7 +50,7 @@ suite('create anonymous user db', function () {
                 });
             });
         });
-    }, 2000);
+    }, 3000);
   });
 
 });
