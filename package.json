@@ -37,7 +37,9 @@
     "load-grunt-tasks": "^0.6.0",
     "hoodie-server": "^0.9.30",
     "matchdep": "^0.3.0",
-    "mocha": "~1.17.1"
+    "mocha": "~1.17.1",
+    "hoodie-integration-test": "0.0.4",
+    "grunt-subgrunt": "^0.4.0"
   },
   "hoodie": {
     "hoodiejs": "node_modules/hoodie/src/hoodie",

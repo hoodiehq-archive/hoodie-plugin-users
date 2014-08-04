@@ -399,6 +399,12 @@ module.exports = function (grunt) {
           }
         }
       }
+    },
+
+    subgrunt: {
+      integration: {
+        'node_modules/hoodie-integration-test': 'default'
+      }
     }
 
   });
@@ -419,6 +425,7 @@ module.exports = function (grunt) {
   grunt.registerTask('test:unit', ['simplemocha:unit']);
   grunt.registerTask('test:browser', [
     'env:test',
+    'chdir-root',
     'shell:removeData',
     'shell:removeEmails',
     'shell:npmLink',
@@ -490,6 +497,16 @@ module.exports = function (grunt) {
     'usemin'
   ]);
 
-  grunt.registerTask('ci', ['integration-test']);
+  grunt.registerTask('ci', [
+    'shell:removeData',
+    'subgrunt:integration',
+    'chdir-root',
+    'test'
+  ]);
+
+  grunt.registerTask('chdir-root', 'Change cwd to root dir', function () {
+    console.log(process.cwd());
+    process.chdir(__dirname);
+  });
 
 };
