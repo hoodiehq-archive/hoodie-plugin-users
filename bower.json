@@ -11,7 +11,11 @@
     "jquery": "~1.9",
     "layoutmanager": "~0.8",
     "modernizr": "~2.6",
-    "tablesort": "git://github.com/tristen/tablesort.git",
+    "tablesort": "git://github.com/tristen/tablesort.git#gh-pages",
     "backbone.subroute": "git://github.com/ModelN/backbone.subroute.git"
+  },
+  "resolutions": {
+    "jquery": "~1.10.2",
+    "backbone": "~1.0"
   }
 }
