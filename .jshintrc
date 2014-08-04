@@ -18,7 +18,7 @@
   "curly": false,
   "eqeqeq": true,
   "forin": false,
-  "immed": false,
+  "immed": true,
   "latedef": false,
   "newcap": true,
   "noarg": true,

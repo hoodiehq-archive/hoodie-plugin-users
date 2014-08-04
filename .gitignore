@@ -2,3 +2,7 @@
 /node_modules
 /test/browser/emails
 /.tmp
+node_modules
+.DS_Store
+.sass-cache
+.tmp
