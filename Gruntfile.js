@@ -399,12 +399,6 @@ module.exports = function (grunt) {
           }
         }
       }
-    },
-
-    subgrunt: {
-      integration: {
-        'node_modules/hoodie-integration-test': 'default'
-      }
     }
 
   });
@@ -497,12 +491,7 @@ module.exports = function (grunt) {
     'usemin'
   ]);
 
-  grunt.registerTask('ci', [
-    'shell:removeData',
-    'subgrunt:integration',
-    'chdir-root',
-    'test'
-  ]);
+  grunt.registerTask('ci', ['test']);
 
   grunt.registerTask('chdir-root', 'Change cwd to root dir', function () {
     console.log(process.cwd());
