@@ -1,7 +1,7 @@
 suite('password reset', function () {
 
   setup(function (done) {
-    this.timeout(10000);
+    this.timeout(20000);
     // phantomjs seems to keep session data between runs,
     // so clear before running tests
     localStorage.clear();
@@ -50,7 +50,7 @@ suite('password reset', function () {
   });
 
   test('user does not exist', function (done) {
-    this.timeout(10000);
+    this.timeout(20000);
     hoodie.account.resetPassword('userdoesnotexist')
       .fail(function (err) {
         assert.ok(/^User could not be found$/.test(err.message));
@@ -134,7 +134,7 @@ suite('password reset', function () {
 suite('password reset - SMTP server down', function () {
 
   setup(function (done) {
-    this.timeout(10000);
+    this.timeout(20000);
     // phantomjs seems to keep session data between runs,
     // so clear before running tests
     localStorage.clear();

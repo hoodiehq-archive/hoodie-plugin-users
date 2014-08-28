@@ -10,7 +10,7 @@ suite('signup and sessions', function () {
   });
 
   test('signUp', function (done) {
-    this.timeout(10000);
+    this.timeout(20000);
     hoodie.account.signUp('testuser', 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
@@ -26,7 +26,7 @@ suite('signup and sessions', function () {
   });
 
   test('signIn', function (done) {
-    this.timeout(10000);
+    this.timeout(20000);
     assert.ok(!hoodie.account.username, 'start logged out');
     hoodie.account.signIn('testuser', 'password')
       .fail(function (err) {
@@ -39,7 +39,7 @@ suite('signup and sessions', function () {
   });
 
   test('signOut', function (done) {
-    this.timeout(10000);
+    this.timeout(20000);
     hoodie.account.signIn('testuser', 'password')
       .then(function () {
         return hoodie.account.signOut();
@@ -54,7 +54,7 @@ suite('signup and sessions', function () {
   });
 
   test('signUp while logged in should fail', function (done) {
-    this.timeout(10000);
+    this.timeout(20000);
     hoodie.account.signIn('testuser', 'password')
       .then(function () {
         return hoodie.account.signUp('testuser2', 'password');
