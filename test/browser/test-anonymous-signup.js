@@ -10,7 +10,7 @@ suite('create anonymous user db', function () {
   });
 
   test('anon database added with task followed by signup', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.task.start('testtask', {title: 'foo'});
     setTimeout(function () {
       $.getJSON('/_api/_all_dbs')

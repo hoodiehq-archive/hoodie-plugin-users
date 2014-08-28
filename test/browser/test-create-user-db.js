@@ -17,7 +17,7 @@ suite('create user db', function () {
   });
 
   test('user database added on signUp', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.account.signUp(newUsername(), 'password')
       .then(function () {
         return $.getJSON('/_api/_all_dbs');
@@ -32,7 +32,7 @@ suite('create user db', function () {
   });
 
   test('user db is writable by user', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.account.signUp(newUsername(), 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
@@ -58,7 +58,7 @@ suite('create user db', function () {
   });
 
   test('user db is not readable by anonymous users', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.account.signUp(newUsername(), 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
@@ -79,7 +79,7 @@ suite('create user db', function () {
   });
 
   test('user db is not readable by other users', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     var firstId;
     var username = newUsername();
     var otherUsername = newUsername();
@@ -109,7 +109,7 @@ suite('create user db', function () {
 
   // test additional databases
   test('additional databases not added on signUp when not configured', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.account.signUp(newUsername(), 'password')
       .then(function () {
         return $.getJSON('/_api/_all_dbs');
@@ -155,7 +155,7 @@ suite('create user db', function () {
   }
 
   test('one additional database added on signUp when configured', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
 
     enableAdditionalDbs(['photos'], function() {
       hoodie.account.signUp(newUsername(), 'password')
@@ -173,7 +173,7 @@ suite('create user db', function () {
   });
 
   test('two additional databases are writeable by user', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     enableAdditionalDbs(['photos', 'horses'], function() {
       hoodie.account.signUp(newUsername(), 'password')
         .then(function () {
@@ -191,7 +191,7 @@ suite('create user db', function () {
   });
 
   test('additional databases are not readable by other users', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     var firstId;
     var username = newUsername();
     var otherUsername = newUsername();
@@ -229,7 +229,7 @@ suite('create user db', function () {
   });
 
   test('additional databases are not readable by anonymous users', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     enableAdditionalDbs(['photos', 'horses'], function() {
       hoodie.account.signUp(newUsername(), 'password')
         .fail(function (err) {

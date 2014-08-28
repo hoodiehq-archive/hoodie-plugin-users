@@ -53,7 +53,7 @@ suite('change username', function () {
   });
 
   test('login after username change', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.account.signUp('changename3', 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
@@ -77,7 +77,7 @@ suite('change username', function () {
   });
 
   test('data and hoodieId carried over to new account', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.account.signUp('changename5', 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
