@@ -1,17 +1,22 @@
 before_install:
-  - npm install -g grunt-cli
+- npm install -g grunt-cli
 before_deploy:
-  - grunt before-deploy
+- grunt before-deploy
 after_deploy:
-  - grunt after-deploy
+- grunt after-deploy
 language: node_js
 node_js:
-  - "0.10"
+- '0.10'
 notifications:
   email: false
 deploy:
   provider: npm
-  email: "stephan@thehoodiefirm.com"
-  "on":
+  email: stephan@thehoodiefirm.com
+  on:
     all_branches: true
     tags: true
+  api_key:
+    secure: hVsg2i2/Yb3gJKxckedZz9654cbmL+3kHGXXVVKbr/SjzZjJGIZ6YEvHc5c7HaUVKf5FfN7le6jU9qBz1FRbv7Vd1zsWUcO98yRcUBYoMolA7DK1WdndrQMXmW/mqRMKNN3ePinY5qfntasihoGA5+EUBJCEB+e0kE5YxQfj56c=
+env:
+  global:
+    secure: xu+1LV5bxGXWSqvqINo5vXUtc1c57LgQIJevRjFfGml6SbzL+MBaU8y2SQISCpSJUguIWBuhIcPDnGT0BW2tpnP5aDPO3ZRYl7kTyTrLxvKeHjlJymOZi8zjbFPUO6l6SidguaoQOYRFpC8tIOqyNHZHJlUkicNtG9u3wh/Nd0A=
