@@ -119,7 +119,6 @@ module.exports = function (grunt) {
     'shell:installPlugin',
     'fakesmtp:test',
     'hoodie',
-    'continueOn',
     'mocha_browser:all',
     'continueOff',
     'hoodie_stop',
