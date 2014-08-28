@@ -10,7 +10,7 @@ suite('change username', function () {
   });
 
   test('delete old user after username change', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.account.signUp('changename1', 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
