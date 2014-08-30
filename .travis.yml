@@ -1,5 +1,5 @@
 before_install:
-- npm install -g grunt-cli
+- npm install -g grunt-cli hoodie-cli
 before_deploy:
 - grunt before-deploy
 after_deploy:
