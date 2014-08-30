@@ -10,7 +10,7 @@ suite('delete user db on account.destroy', function () {
   });
 
   test('user db is removed', function (done) {
-    this.timeout(10000);
+    this.timeout(60000);
     hoodie.account.signUp('destroytest1', 'password')
       .fail(function (err) {
         assert.ok(false, err.message);

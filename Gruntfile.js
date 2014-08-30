@@ -105,7 +105,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-browser');
   grunt.loadNpmTasks('grunt-simple-mocha');
-  grunt.loadNpmTasks('grunt-continue');
   grunt.loadNpmTasks('grunt-hoodie');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-env');
@@ -119,9 +118,7 @@ module.exports = function (grunt) {
     'shell:installPlugin',
     'fakesmtp:test',
     'hoodie',
-    'continueOn',
     'mocha_browser:all',
-    'continueOff',
     'hoodie_stop',
     'shell:npmUnlink',
     'shell:removePlugin'

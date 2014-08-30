@@ -1,7 +1,7 @@
 suite('password reset', function () {
 
   setup(function (done) {
-    this.timeout(10000);
+    this.timeout(60000);
     // phantomjs seems to keep session data between runs,
     // so clear before running tests
     localStorage.clear();
@@ -50,7 +50,7 @@ suite('password reset', function () {
   });
 
   test('user does not exist', function (done) {
-    this.timeout(10000);
+    this.timeout(60000);
     hoodie.account.resetPassword('userdoesnotexist')
       .fail(function (err) {
         assert.ok(/^User could not be found$/.test(err.message));
@@ -63,7 +63,7 @@ suite('password reset', function () {
   });
 
   test('reset password - username is email address', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.account.signUp('resetuser@example.com', 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
@@ -108,7 +108,7 @@ suite('password reset', function () {
   });
 
   test('reset password - username is not email address', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.account.signUp('resetuser2', 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
@@ -134,7 +134,7 @@ suite('password reset', function () {
 suite('password reset - SMTP server down', function () {
 
   setup(function (done) {
-    this.timeout(10000);
+    this.timeout(60000);
     // phantomjs seems to keep session data between runs,
     // so clear before running tests
     localStorage.clear();
@@ -183,7 +183,7 @@ suite('password reset - SMTP server down', function () {
   });
 
   test('reset password - fail to send email', function (done) {
-    this.timeout(20000);
+    this.timeout(60000);
     hoodie.account.signUp('resetuser3@example.com', 'password')
       .fail(function (err) {
         assert.ok(false, err.message);
