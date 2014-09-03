@@ -1,6 +1,6 @@
 {
   "name": "hoodie-plugin-users",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Hoodie plugin for handling user accounts and dbs",
   "repository": {
     "type": "git",
@@ -35,5 +35,6 @@
   },
   "scripts": {
     "test": "grunt test"
-  }
+  },
+  "codename": "gnarly-chough"
 }
