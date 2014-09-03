@@ -101,14 +101,7 @@ module.exports = function (grunt) {
   // custom tasks
   grunt.loadTasks('./tasks');
 
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-mocha-browser');
-  grunt.loadNpmTasks('grunt-simple-mocha');
-  grunt.loadNpmTasks('grunt-continue');
-  grunt.loadNpmTasks('grunt-hoodie');
-  grunt.loadNpmTasks('grunt-shell');
-  grunt.loadNpmTasks('grunt-env');
+  require('load-grunt-tasks')(grunt);
 
   grunt.registerTask('test:unit', ['simplemocha:unit']);
   grunt.registerTask('test:browser', [

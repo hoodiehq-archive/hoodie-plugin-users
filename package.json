@@ -19,6 +19,7 @@
     "grunt-shell": "^0.6.4",
     "grunt-simple-mocha": "^0.4.0",
     "hoodie-server": "^0.9.30",
+    "load-grunt-tasks": "^0.6.0",
     "mocha": "~1.17.1"
   },
   "hoodie": {
