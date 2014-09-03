@@ -7,18 +7,19 @@
     "url": "https://github.com/hoodiehq/hoodie-plugin-users.git"
   },
   "devDependencies": {
-    "mocha": "~1.17.1",
     "chai": "~1.9.0",
     "grunt": "^0.4.3",
-    "grunt-shell": "^0.6.4",
-    "grunt-mocha-browser": "0.0.4",
-    "grunt-hoodie": "0.3.0",
     "grunt-continue": "0.0.1",
-    "hoodie-server": "^0.9.30",
-    "grunt-simple-mocha": "^0.4.0",
     "grunt-contrib-jshint": "^0.9.2",
+    "grunt-contrib-watch": "^0.6.0",
     "grunt-env": "^0.4.1",
-    "grunt-contrib-watch": "^0.6.0"
+    "grunt-hoodie": "0.3.0",
+    "grunt-mocha-browser": "0.0.4",
+    "grunt-release-hoodie": "^2.7.0-rc.2",
+    "grunt-shell": "^0.6.4",
+    "grunt-simple-mocha": "^0.4.0",
+    "hoodie-server": "^0.9.30",
+    "mocha": "~1.17.1"
   },
   "hoodie": {
     "hoodiejs": "node_modules/hoodie/src/hoodie",
