@@ -3,18 +3,10 @@ var path = require('path');
 
 module.exports = function (grunt) {
 
-  var yeomanConfig = {
-    app: 'app',
-    temp: '.tmp',
-    dist: 'admin-dashboard'
-  };
-
   // Project configuration.
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
-
-    yeoman: yeomanConfig,
 
     useminPrepare: {
       html: 'app/index.html',
@@ -74,6 +66,17 @@ module.exports = function (grunt) {
         }]
       }
     },
+
+    uglify: {
+      dist: {
+        files: {
+          'admin-dashboard/scripts/app.js': [
+            '.tmp/scripts/**/*.js'
+          ]
+        }
+      }
+    },
+
     copy: {
       dist: {
         files: [{
@@ -323,12 +326,15 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'coffee',
+    'coffee:dist',
     'handlebars',
     'compass:dist',
     'useminPrepare',
     //'imagemin',
-    //'htmlmin',
+    'htmlmin',
+    //'concat:generated',
+    //'cssmin:generated',
+    //'uglify:generated',
     'concat',
     'copy',
     'usemin'

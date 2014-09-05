@@ -2,7 +2,8 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> 
+<html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -17,29 +18,28 @@
         <!-- endbuild -->
     </head>
     <body>
-    <script src="/_api/_plugins/_assets/scripts/admin-dashboard-uikit.js"></script>
-    <!-- build:js scripts/plugins.js -->
-    <script src="components/timeago/jquery.timeago.js"></script>
+        <script src="/_api/_plugins/_assets/scripts/admin-dashboard-uikit.js"></script>
+        <!-- build:js scripts/plugins.js -->
+        <script src="components/jquery-timeago/jquery.timeago.js"></script>
+        <script src="components/handlebars/handlebars.runtime.js"></script>
+        <script src="components/underscore/underscore.js"></script>
+        <script src="components/backbone/backbone.js"></script>
+        <script src="components/tablesort/tablesort.min.js"></script>
+        <script src="components/backbone.subroute/backbone.subroute.js"></script>
+        <script src="components/layoutmanager/backbone.layoutmanager.js"></script>
+        <!-- endbuild -->
 
-    <script src="components/handlebars/handlebars.runtime.js"></script>
-    <script src="components/underscore/underscore.js"></script>
-    <script src="components/backbone/backbone.js"></script>
-    <script src="components/tablesort/tablesort.min.js"></script>
-    <script src="components/backbone.subroute/backbone.subroute.js"></script>
-    <script src="components/layoutmanager/backbone.layoutmanager.js"></script>
-    <!-- endbuild -->
+        <!-- build:js(.tmp) scripts/app.js -->
+        <script src="scripts/init.js"></script>
+        <script src="scripts/users.js"></script>
 
-    <!-- build:js(.tmp) scripts/app.js -->
-    <script src="scripts/init.js"></script>
-    <script src="scripts/users.js"></script>
+        <script src="scripts/views/base-view.js"></script>
+        <script src="scripts/views/users-view.js"></script>
+        <script src="scripts/views/application-view.js"></script>
 
-    <script src="scripts/views/base-view.js"></script>
-    <script src="scripts/views/users-view.js"></script>
-    <script src="scripts/views/application-view.js"></script>
+        <script src="scripts/router.js"></script>
 
-    <script src="scripts/router.js"></script>
-
-    <script src="scripts/compiled-templates.js"></script>
-    <!-- endbuild -->
-</body>
+        <script src="scripts/compiled-templates.js"></script>
+        <!-- endbuild -->
+    </body>
 </html>
