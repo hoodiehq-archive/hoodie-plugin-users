@@ -3,10 +3,131 @@ var path = require('path');
 
 module.exports = function (grunt) {
 
+  var yeomanConfig = {
+    app: 'app',
+    temp: '.tmp',
+    dist: 'admin-dashboard'
+  };
+
   // Project configuration.
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
+
+    yeoman: yeomanConfig,
+
+    useminPrepare: {
+      html: 'app/index.html',
+      options: {
+        dest: 'admin-dashboard'
+      }
+    },
+
+    usemin: {
+      html: ['admin-dashboard/index.html'],
+      css: ['admin-dashboard/styles/**/*.css'],
+      options: {
+        dirs: ['admin-dashboard']
+      }
+    },
+
+    imagemin: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: 'app/images',
+          src: '**/*.{png,jpg,jpeg}',
+          dest: 'admin-dashboard/images'
+        }]
+      }
+    },
+
+    cssmin: {
+      dist: {
+        files: {
+          'admin-dashboard/styles/app.css': [
+            '.tmp/styles/**/*.css',
+            'app/styles/**/*.css'
+          ]
+        }
+      }
+    },
+
+    htmlmin: {
+      dist: {
+        options: {
+          /*removeCommentsFromCDATA: true,
+          // https://github.com/yeoman/grunt-usemin/issues/44
+          //collapseWhitespace: true,
+          collapseBooleanAttributes: true,
+          removeAttributeQuotes: true,
+          removeRedundantAttributes: true,
+          useShortDoctype: true,
+          removeEmptyAttributes: true,
+          removeOptionalTags: true*/
+        },
+        files: [{
+          expand: true,
+          cwd: 'app',
+          src: '*.html',
+          dest: 'admin-dashboard'
+        }]
+      }
+    },
+    copy: {
+      dist: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: 'app',
+          dest: 'admin-dashboard',
+          src: [
+            '*.{ico,txt}',
+            '.htaccess'
+          ]
+        }]
+      }
+    },
+
+
+    coffee: {
+      dist: {
+        files: [{
+          // rather than compiling multiple files here you should
+          // require them into your main .coffee file
+          expand: true,
+          cwd: 'app/scripts',
+          src: '**/*.coffee',
+          dest: '.tmp/scripts',
+          ext: '.js'
+        }]
+      },
+      test: {
+        files: [{
+          expand: true,
+          cwd: '.tmp/spec',
+          src: '*.coffee',
+          dest: 'test/spec'
+        }]
+      }
+    },
+
+    compass: {
+      options: {
+        sassDir: 'app/styles',
+        cssDir: '.tmp/styles',
+        imagesDir: 'app/images',
+        javascriptsDir: 'app/scripts',
+        importPath: 'app/components',
+        relativeAssets: true
+      },
+      dist: {},
+      server: {
+        options: {
+          debugInfo: true
+        }
+      }
+    },
 
     jshint: {
       files: [
@@ -85,7 +206,57 @@ module.exports = function (grunt) {
       }
     },
 
+    clean: {
+      dist: ['.tmp', 'admin-dashboard/*'],
+      server: '.tmp'
+    },
+
+    handlebars: {
+      compile: {
+        files: {
+          '.tmp/scripts/compiled-templates.js': [
+            'app/scripts/templates/**/*.hbs'
+          ]
+        },
+        options: {
+          // namespace: 'admin-dashboard.Templates',
+          namespace: 'JST',
+          processName: function (filename) {
+            // funky name processing here
+            return filename
+              .replace(/^app\/scripts\/templates\//, '')
+              .replace(/\.hbs$/, '');
+          }
+        }
+      }
+    },
+
     watch: {
+      coffee: {
+        files: 'app/scripts/**/*.coffee',
+        tasks: ['coffee', 'livereload']
+      },
+      compass: {
+        files: [
+          'app/styles/**/*.{scss,sass}'
+        ],
+        tasks: ['compass', 'livereload']
+      },
+      livereload: {
+        files: [
+          'app/*.html',
+          '{.tmp,app}/styles/**/*.css',
+          '{.tmp,app}/scripts/**/*.js',
+          'app/images/**/*.{png,jpg,jpeg,webp}'
+        ],
+        tasks: ['livereload']
+      },
+      handlebars: {
+        files: [
+          'app/scripts/templates/**/*.hbs'
+        ],
+        tasks: ['handlebars', 'livereload']
+      },
       jshint: {
         files: ['<%= jshint.files %>'],
         tasks: 'jshint'
@@ -137,6 +308,30 @@ module.exports = function (grunt) {
     'jshint',
     'test:unit',
     'test:browser'
+  ]);
+
+  grunt.registerTask('server', [
+    'clean:server',
+    'coffee:dist',
+    'handlebars',
+    'compass:server',
+    'livereload-start',
+    'connect:livereload',
+    'open',
+    'watch'
+  ]);
+
+  grunt.registerTask('build', [
+    'clean:dist',
+    'coffee',
+    'handlebars',
+    'compass:dist',
+    'useminPrepare',
+    //'imagemin',
+    //'htmlmin',
+    'concat',
+    'copy',
+    'usemin'
   ]);
 
 };
