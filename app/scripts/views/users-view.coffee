@@ -5,8 +5,19 @@ class Users.UsersView extends Users.BaseView
   sortDirection: 'sort-up'
   blockSorting: false
 
+  getConfig: _.partial(couchr.get, '/_api/app/config')
+  setConfig: _.partial(couchr.put, '/_api/app/config')
+
+  updateConfig: (obj, callback) ->
+    @getConfig (err, doc) =>
+      return callback(err)  if err
+      doc.config = _.extend(doc.config, obj)
+      @setConfig doc, callback
+      return
+    return
+
+
   events :
-    'submit form.config'                          : 'updateConfig'
     'submit form.userSearch'                      : 'search'
     'submit form.updatePassword'                  : 'updatePassword'
     'submit form.updateUsername'                  : 'updateUsername'
@@ -15,9 +26,18 @@ class Users.UsersView extends Users.BaseView
     'click .user a.removeUserPrompt'              : 'removeUserPrompt'
     'click #confirmUserRemoveModal .removeUser'   : 'removeUser'
     'click .clearSearch'                          : 'clearSearch'
+    'click .storeDatabases'                       : 'storeDatabases'
     'click .sort-header'                          : 'saveSorting'
 
   update : =>
+    # set initial form values
+    @getConfig (err, doc) =>
+      console.log('doc: ',doc);
+      return console.log(err)  if err
+      @databases = doc.config.additional_user_dbs.join(', ')
+      console.log('databases: ',@databases);
+      @render()
+      return
     hoodieAdmin.user.findAll().then (users, object = {}, appConfig = {}) =>
       @totalUsers   = users.length
       @users        = users
@@ -35,10 +55,6 @@ class Users.UsersView extends Users.BaseView
       # config defaults
       @config.confirmationEmailText or= "Hello {name}, Thanks for signing up!"
       @render()
-
-  updateConfig : (event) ->
-    event.preventDefault()
-    hoodieAdmin.modules.update('module', 'users', @_updateModule)
 
   emailTransportNotConfigured : ->
     isConfigured = @appConfig?.email?.transport?
@@ -195,12 +211,19 @@ class Users.UsersView extends Users.BaseView
 
     super
 
-  _updateModule : (module) =>
-    module.config.confirmationMandatory     = @$el.find('[name=confirmationMandatory]').is(':checked')
-    module.config.confirmationEmailFrom     = @$el.find('[name=confirmationEmailFrom]').val()
-    module.config.confirmationEmailSubject  = @$el.find('[name=confirmationEmailSubject]').val()
-    module.config.confirmationEmailText     = @$el.find('[name=confirmationEmailText]').val()
-    return module
+  storeDatabases : =>
+    event.preventDefault()
+    if @$el.find('[name=userDatabases]')[0].checkValidity()
+      dbs = @$el.find("[name=userDatabases]").val().replace(RegExp(" ", "g"), "").split(",")
+      console.log('dbs: ',dbs);
+      @updateConfig 
+        additional_user_dbs: dbs
+      , (err) =>
+        if err
+          @setConfig 
+            additional_user_dbs: dbs
+          console.log err
+      return
 
   _configDefaults : ->
     #confirmationEmailText : "Hello {name}! Thanks for signing up with #{@appInfo.name}"

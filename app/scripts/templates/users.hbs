@@ -106,6 +106,19 @@
     </fieldset>
   </form>
 
+  <h2>Additional databases for each user</h2>
+  <form action="" class="userDBs">
+    <fieldset>
+      <div class="group">
+        <label for="">Extra user databases</label>
+        <input type="text" name="userDatabases" pattern="([a-z, -])+" class="form-control search-query" placeholder="Databases"{{#if databases}} value="{{databases}}"{{/if}}>
+        <p class="help-block">Comma-separated list. Will generate a database called "userHash–databaseName" for each database entered, per user, i.e. "7nzj7rl-photos".</p>
+        <p class="help-block">Please only use lower case letters and dashes, separated by commas. Spaces will be stripped.</p>
+        <button class="storeDatabases btn ok" type="submit">Set extra databases</button>
+      </div>
+    </fieldset>
+  </form>
+
   <h2>Search for users</h2>
   <form action="" class="userSearch">
     <fieldset>
