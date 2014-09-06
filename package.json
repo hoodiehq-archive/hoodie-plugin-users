@@ -15,7 +15,7 @@
     "grunt-env": "^0.4.1",
     "grunt-hoodie": "0.3.0",
     "grunt-mocha-browser": "0.0.4",
-    "grunt-release-hoodie": "^2.7.0-rc.2",
+    "grunt-release-hoodie": "^2.7.0",
     "grunt-shell": "^0.6.4",
     "grunt-simple-mocha": "^0.4.0",
     "hoodie-server": "^0.9.30",
