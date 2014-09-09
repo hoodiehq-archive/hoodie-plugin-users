@@ -28,7 +28,7 @@
     "grunt-release-hoodie": "^2.7.0-rc.2",
     "grunt-shell": "^0.6.4",
     "grunt-simple-mocha": "^0.4.0",
-    "grunt-usemin": "^1.9.0",
+    "grunt-usemin": "^0.1.9",
     "hoodie-server": "^0.9.30",
     "load-grunt-tasks": "^0.6.0",
     "mocha": "~1.17.1"
