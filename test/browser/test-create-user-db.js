@@ -172,7 +172,7 @@ suite('create user db', function () {
     });
   });
 
-  test('two additional databases are writeable by user', function (done) {
+  test('two additional databases added on signUp when configured', function (done) {
     this.timeout(10000);
     enableAdditionalDbs(['photos', 'horses'], function() {
       hoodie.account.signUp(newUsername(), 'password')
@@ -186,6 +186,38 @@ suite('create user db', function () {
           assert.notEqual(data.indexOf('user/' + hoodie.id() + '-photos'), -1);
           assert.notEqual(data.indexOf('user/' + hoodie.id() + '-horses'), -1);
           done();
+        });
+    });
+  });
+
+  test('additional db is writable by user', function (done) {
+    this.timeout(10000);
+    enableAdditionalDbs(['photos'], function() {
+      hoodie.account.signUp(newUsername(), 'password')
+        .fail(function (err) {
+          assert.ok(false, err.message);
+        })
+        .done(function () {
+          setTimeout(function() {
+            var db = hoodie.open('user/' + hoodie.id() + '-photos');
+            db.add('example', {title: 'foo'})
+              .fail(function (err) {
+                assert.ok(false, err.message);
+              })
+              .done(function (doc) {
+                setTimeout(function () {
+                  var url = '/_api/user%2F' + hoodie.id() + '-photos/' + encodeURIComponent(doc.id);
+                  $.getJSON(url)
+                    .fail(function (err) {
+                      assert.ok(false, JSON.stringify(err));
+                    })
+                    .done(function (data) {
+                      assert.equal(data.title, 'foo');
+                      done();
+                    });
+                }, 3000);
+              });
+          }, 5000);
         });
     });
   });
