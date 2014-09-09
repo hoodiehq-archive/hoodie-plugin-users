@@ -20,3 +20,7 @@ deploy:
 env:
   global:
     secure: xu+1LV5bxGXWSqvqINo5vXUtc1c57LgQIJevRjFfGml6SbzL+MBaU8y2SQISCpSJUguIWBuhIcPDnGT0BW2tpnP5aDPO3ZRYl7kTyTrLxvKeHjlJymOZi8zjbFPUO6l6SidguaoQOYRFpC8tIOqyNHZHJlUkicNtG9u3wh/Nd0A=
+sudo: false
+cache:
+  directories:
+  - node_modules
