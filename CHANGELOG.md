@@ -1,3 +1,12 @@
+<a name="2.1.0"></a>
+## 2.1.0 (2014-10-08)
+
+
+#### Bug Fixes
+
+* when upgrading from anonymous, remove correct old user doc ([f8d89ec6](https://github.com/hoodiehq/hoodie-plugin-users/commit/f8d89ec6ae3544ff0c71e64ffaad341bb6c53564))
+
+
 <a name="2.0.0"></a>
 ## 2.0.0 (2014-09-09)
 
