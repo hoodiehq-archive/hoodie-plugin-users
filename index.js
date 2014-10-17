@@ -7,6 +7,7 @@ var removeAccount = require('./lib/remove_account');
 var passwordReset = require('./lib/password_reset');
 var changeUsername = require('./lib/change_username');
 var signUp = require('./lib/signup');
+var utils = require('./lib/utils');
 
 
 module.exports = function (hoodie, callback) {
@@ -28,6 +29,8 @@ module.exports = function (hoodie, callback) {
     }
     else if (!signUp.isConfirmed(doc)) {
       signUp(hoodie, doc);
+    } else {
+      hoodie.task.addSource(utils.userDB(doc));
     }
   }
 
