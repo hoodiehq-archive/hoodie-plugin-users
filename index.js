@@ -34,6 +34,26 @@ module.exports = function (hoodie, callback) {
     }
   }
 
+  /**
+   * Loops through all user accounts and runs them through
+   * the new user procedure. For most users that will mean
+   * that their user database will be added as a listener
+   * to the event system.
+   */
+  function handleExistingUsers (hoodie, done) {
+    // bootstrap existing users
+    hoodie.account.findAll(function (error, accounts) {
+      if (error) {
+        console.log('hoodie-plugin-users: can’t bootstrap existing accounts');
+        return done(error);
+      } else {
+        accounts.forEach(userChange);
+        done();
+      }
+    });
+  }
+
+
   hoodie.account.on('user:change', userChange);
   hoodie.account.on('user_anonymous:change', userChange);
 
@@ -46,7 +66,6 @@ module.exports = function (hoodie, callback) {
   /**
    * plugin initialization complete
    */
-
-  callback();
+  handleExistingUsers(hoodie, callback);
 
 };
