@@ -1,3 +1,14 @@
+<a name="2.1.1"></a>
+### 2.1.1 (2014-10-20)
+
+
+#### Bug Fixes
+
+* **tasks:**
+  * handle pending tasks on startup ([5017d93e](https://github.com/hoodiehq/hoodie-plugin-users/commit/5017d93e1c8c987224b86e7847e2a0691e852f78))
+  * add new user dbs to task sources ([af93f548](https://github.com/hoodiehq/hoodie-plugin-users/commit/af93f548a1a626676b4b6d4197e458cea905749f))
+
+
 <a name="2.1.0"></a>
 ## 2.1.0 (2014-10-08)
 
