@@ -1,6 +1,6 @@
 {
   "name": "hoodie-plugin-users",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Hoodie plugin for handling user accounts and dbs",
   "repository": {
     "type": "git",
@@ -47,5 +47,5 @@
   "scripts": {
     "test": "grunt test"
   },
-  "codename": "slick-hawk"
+  "codename": "wonderful-mallard"
 }

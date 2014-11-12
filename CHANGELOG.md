@@ -1,3 +1,12 @@
+<a name="2.1.2"></a>
+### 2.1.2 (2014-11-12)
+
+
+#### Bug Fixes
+
+* **npm:** set correct hoodie version ([8ba57e4c](https://github.com/hoodiehq/hoodie-plugin-users/commit/8ba57e4c41ae652e71236c00102374a5fce3c9da))
+
+
 <a name="2.1.1"></a>
 ### 2.1.1 (2014-10-20)
 
