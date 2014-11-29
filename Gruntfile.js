@@ -191,6 +191,9 @@ module.exports = function (grunt) {
             grunt.config.set('connect.options.port', config.stack.www.port);
           }
         }
+      },
+      stop: {
+
       }
     },
 
@@ -285,11 +288,11 @@ module.exports = function (grunt) {
     'shell:npmLink',
     'shell:installPlugin',
     'fakesmtp:test',
-    'hoodie',
+    'hoodie:start',
     'continueOn',
     'mocha_browser:all',
     'continueOff',
-    'hoodie_stop',
+    'hoodie:stop',
     'shell:npmUnlink',
     'shell:removePlugin'
   ]);
@@ -299,10 +302,10 @@ module.exports = function (grunt) {
     'env:test',
     'shell:npmLink',
     'shell:installPlugin',
-    'hoodie'
+    'hoodie:start'
   ]);
   grunt.registerTask('stop', [
-    'hoodie_stop',
+    'hoodie:stop',
     'shell:npmUnlink',
     'shell:removePlugin',
     'shell:killHoodie'
