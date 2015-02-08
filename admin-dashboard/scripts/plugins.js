@@ -3608,7 +3608,7 @@ Handlebars.template = Handlebars.VM.template;
 */!function(){function a(a,b){if("TABLE"!==a.tagName)throw new Error("Element must be a table");this.init(a,b||{})}a.prototype={init:function(a,b){var c,d=this;if(this.thead=!1,this.options=b,this.options.d=b.descending||!1,a.rows&&a.rows.length>0&&(a.tHead&&a.tHead.rows.length>0?(c=a.tHead.rows[a.tHead.rows.length-1],d.thead=!0):c=a.rows[0]),c){for(var e,f=function(){for(var a=g(i,"tr").getElementsByTagName("th"),b=0;b<a.length;b++)(l(a[b],"sort-up")||l(a[b],"sort-down"))&&a[b]!==this&&(a[b].className=a[b].className.replace(" sort-down","").replace(" sort-up",""));d.current=this,d.sortTable(this)},h=0;h<c.cells.length;h++){var i=c.cells[h];l(i,"no-sort")||(i.className+=" sort-header",m(i,"click",f),l(i,"sort-default")&&(e=i))}e&&(d.current=e,d.sortTable(e,!0))}},getFirstDataRowIndex:function(){return this.thead?0:1},sortTable:function(a,b){var c,d=this,m=a.cellIndex,n=g(a,"table"),o="",p=d.getFirstDataRowIndex();if(!(n.rows.length<=1)){for(;""===o&&p<n.tBodies[0].rows.length;)o=h(n.tBodies[0].rows[p].cells[m]),o=j(o),("<!--"===o.substr(0,4)||0===o.length)&&(o=""),p++;if(""!==o){var q=function(a,b){var c=h(a.cells[d.col]).toLowerCase(),e=h(b.cells[d.col]).toLowerCase();return c===e?0:e>c?1:-1},r=function(a,b){var c=h(a.cells[d.col]),e=h(b.cells[d.col]);return c=k(c),e=k(e),i(e,c)},s=function(a,b){var c=h(a.cells[d.col]).toLowerCase(),e=h(b.cells[d.col]).toLowerCase();return f(e)-f(c)};c=o.match(/^-?[£\x24Û¢´€]?\d+\s*([,\.]\d{0,2})/)||o.match(/^-?\d+\s*([,\.]\d{0,2})?[£\x24Û¢´€]/)||o.match(/^-?(\d)+-?([,\.]){0,1}-?(\d)+([E,e][\-+][\d]+)?%?$/)?r:e(o)?s:q,this.col=m;var t,u=[],v={},w=0;for(p=0;p<n.tBodies.length;p++)for(t=0;t<n.tBodies[p].rows.length;t++){var x=n.tBodies[p].rows[t];l(x,"no-sort")?v[w]=x:u.push({tr:x,index:w}),w++}b||(d.options.d?l(a,"sort-up")?(a.className=a.className.replace(/ sort-up/,""),a.className+=" sort-down"):(a.className=a.className.replace(/ sort-down/,""),a.className+=" sort-up"):l(a,"sort-down")?(a.className=a.className.replace(/ sort-down/,""),a.className+=" sort-up"):(a.className=a.className.replace(/ sort-up/,""),a.className+=" sort-down"));var y=function(a){return function(b,c){var d=a(b.tr,c.tr);return 0===d?b.index-c.index:d}},z=function(a){return function(b,c){var d=a(b.tr,c.tr);return 0===d?c.index-b.index:d}};l(a,"sort-down")?(u.sort(z(c)),u.reverse()):u.sort(y(c));var A=0;for(p=0;w>p;p++){var B;v[p]?(B=v[p],A++):B=u[p-A].tr,n.tBodies[0].appendChild(B)}}}},refresh:function(){void 0!==this.current&&this.sortTable(this.current,!0)}};var b=/(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\.?\,?\s*/i,c=/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/,d=/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i,e=function(a){return-1!==(-1!==a.search(b)||-1!==a.search(c)||a.search(-1!==d))&&!isNaN(f(a))},f=function(a){return a=a.replace(/\-/g,"/"),a=a.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2})/,"$1/$2/$3"),new Date(a).getTime()},g=function(a,b){return null===a?null:1===a.nodeType&&a.tagName.toLowerCase()===b.toLowerCase()?a:g(a.parentNode,b)},h=function(a){var b=this;if("string"==typeof a||"undefined"==typeof a)return a;var c=a.getAttribute("data-sort")||"";if(c)return c;if(a.textContent)return a.textContent;if(a.innerText)return a.innerText;for(var d=a.childNodes,e=d.length,f=0;e>f;f++)switch(d[f].nodeType){case 1:c+=b.getInnerText(d[f]);break;case 3:c+=d[f].nodeValue}return c},i=function(a,b){var c=parseFloat(a),d=parseFloat(b);return a=isNaN(c)?0:c,b=isNaN(d)?0:d,a-b},j=function(a){return a.replace(/^\s+|\s+$/g,"")},k=function(a){return a.replace(/[^\-?0-9.]/g,"")},l=function(a,b){return(" "+a.className+" ").indexOf(" "+b+" ")>-1},m=function(a,b,c){a.attachEvent?(a["e"+b+c]=c,a[b+c]=function(){a["e"+b+c](window.event)},a.attachEvent("on"+b,a[b+c])):a.addEventListener(b,c,!1)};"undefined"!=typeof module&&module.exports?module.exports=a:window.Tablesort=a}();
 // backbone-subroute 0.4.4
 //
-// Copyright (C) 2012 Dave Cadwallader, Model N, Inc.  
+// Copyright (C) 2012 Dave Cadwallader, Model N, Inc.
 // Distributed under the MIT License
 //
 // Documentation and full license available at:
@@ -3638,7 +3638,7 @@ Handlebars.template = Handlebars.VM.template;
 
             // SubRoute instances may be instantiated using a prefix with or without a trailing slash.
             // If the prefix does *not* have a trailing slash, we need to insert a slash as a separator
-            // between the prefix and the sub-route path for each route that we register with Backbone.        
+            // between the prefix and the sub-route path for each route that we register with Backbone.
             this.separator = (prefix.slice(-1) === "/") ? "" : "/";
 
             // if you want to match "books" and "books/" without creating separate routes, set this
@@ -3656,7 +3656,7 @@ Handlebars.template = Handlebars.VM.template;
                 hash = Backbone.history.getHash();
             }
 
-            // Trigger the subroute immediately.  this supports the case where 
+            // Trigger the subroute immediately.  this supports the case where
             // a user directly navigates to a URL with a subroute on the first page load.
             // Check every element, if one matches, break. Prevent multiple matches
             _.every(this.routes, function(key, route) {
@@ -3683,7 +3683,7 @@ Handlebars.template = Handlebars.VM.template;
             Backbone.Router.prototype.navigate.call(this, route, options);
         },
         route: function(route, name, callback) {
-            // strip off any leading slashes in the sub-route path, 
+            // strip off any leading slashes in the sub-route path,
             // since we already handle inserting them when needed.
             if (route.substr(0) === "/") {
                 route = route.substr(1, route.length);
@@ -3705,7 +3705,7 @@ Handlebars.template = Handlebars.VM.template;
             // remove the un-prefixed route from our routes hash
             delete this.routes[route];
 
-            // add the prefixed-route.  note that this routes hash is just provided 
+            // add the prefixed-route.  note that this routes hash is just provided
             // for informational and debugging purposes and is not used by the actual routing code.
             this.routes[_route] = name;
 
@@ -4007,7 +4007,7 @@ var LayoutManager = Backbone.View.extend({
         if (manager.noel && root.$el.length > 1) {
           // Do not display a warning while testing or if warning suppression
           // is enabled.
-          if (warn && !options.suppressWarnings) { 
+          if (warn && !options.suppressWarnings) {
             window.console.warn("Using `el: false` with multiple top level " +
               "elements is not supported.");
 
@@ -4601,257 +4601,3 @@ LayoutManager.prototype.options = {
 keys = _.keys(LayoutManager.prototype.options);
 
 })(typeof global === "object" ? global : this);
-
-/**
- * Universal module definition
- */
-
-(function (root, factory) {
-
-    if (typeof exports === 'object') {
-        factory(exports, require('events'), require('jquery')); // Commonjs
-    }
-    else if (typeof define === 'function' && define.amd) {
-        define(['exports', 'events', 'jquery'], factory); // AMD
-    }
-    else {
-        root.couchr = {};
-        factory(root.couchr, root.events, jQuery); // Browser globals
-    }
-
-}(this, function (exports, events, $) {
-
-    /**
-     * Returns a function for handling ajax responses from jquery and calls
-     * the callback with the data or appropriate error.
-     *
-     * @param {Function} callback(err,response)
-     * @api private
-     */
-
-    function onComplete(options, callback) {
-        return function (req) {
-            var resp;
-            if (ctype = req.getResponseHeader('Content-Type')) {
-                ctype = ctype.split(';')[0];
-            }
-            if (ctype === 'application/json' || ctype === 'text/json') {
-                try {
-                    resp = $.parseJSON(req.responseText)
-                }
-                catch (e) {
-                    return callback(e, null, req);
-                }
-            }
-            else {
-                var ct = req.getResponseHeader("content-type") || "";
-                var xml = ct.indexOf("xml") >= 0;
-                resp = xml ? req.responseXML : req.responseText;
-            }
-            if (req.status == 200 || req.status == 201 || req.status == 202) {
-                callback(null, resp, req);
-            }
-            else if (resp && (resp.error || resp.reason)) {
-                var err = new Error(resp.reason || resp.error);
-                err.error = resp.error;
-                err.reason = resp.reason;
-                err.code = resp.code;
-                err.status = req.status;
-                callback(err, null, req);
-            }
-            else {
-                // TODO: map status code to meaningful error message
-                var msg = req.statusText;
-                if (!msg || msg === 'error') {
-                    msg = 'Returned status code: ' + req.status;
-                }
-                var err2 = new Error(msg);
-                err2.status = req.status;
-                callback(err2, null, req);
-            }
-        };
-    }
-
-    /**
-     * Properly encodes query parameters to CouchDB views etc. Handle complex
-     * keys and other non-string parameters by passing through JSON.stringify.
-     * Returns a shallow-copied clone of the original query after complex values
-     * have been stringified.
-     *
-     * @name stringifyQuery(query)
-     * @param {Object} query
-     * @returns {Object}
-     * @api public
-     */
-
-    exports.stringifyQuery = function (query) {
-        var q = {};
-        for (var k in query) {
-            if (typeof query[k] !== 'string') {
-                q[k] = JSON.stringify(query[k]);
-            }
-            else {
-                q[k] = query[k];
-            }
-        }
-        return q;
-    };
-
-    /**
-     * Make a request using jQuery.ajax, with some default settings and proper
-     * callback handling.
-     *
-     * @name ajax(options, callback)
-     * @param {Object} options
-     * @param {Function} callback(err,response)
-     * @api public
-     */
-
-    exports.ajax = function (options, callback) {
-        options.complete = onComplete(options, callback);
-        options.dataType = 'json';
-        if (!options.hasOwnProperty('cache')) {
-            // IE has a tendency to cache /_session and other things stupidly
-            // so turning it off by default
-            options.cache = false;
-        }
-        return $.ajax(options);
-    };
-
-
-    exports.request = function (method, url, /*o*/data, /*o*/opt, callback) {
-        if (!callback) {
-            callback = opt;
-            opt = null;
-        }
-        if (!callback) {
-            callback = data;
-            data = null;
-        }
-        var options = opt || {};
-        options.type = method;
-        options.url = url;
-
-        if (data) {
-            try {
-                if (method === 'GET' || method === 'HEAD') {
-                    options.data = exports.stringifyQuery(data);
-                }
-                else {
-                    options.data = JSON.stringify(data);
-                    options.processData = false;
-                    options.contentType = 'application/json';
-                }
-            }
-            catch (e) {
-                return callback(e);
-            }
-        }
-        return exports.ajax(options, callback);
-    };
-
-    function makeRequest(method) {
-        return function () {
-            var args = Array.prototype.slice.call(arguments);
-            return exports.request.apply(this, [method].concat(args));
-        };
-    };
-
-    exports.get = makeRequest('GET');
-    exports.post = makeRequest('POST');
-    exports.head = makeRequest('HEAD');
-    exports.put = makeRequest('PUT');
-
-    // data.rev should be in query part of URL
-    exports.del = function (url, data, callback) {
-        if (!callback) {
-            callback = data;
-            data = null;
-        }
-        if (data && data.rev && !/\?rev=/.test(url)) {
-            url += (url.indexOf('?') === -1) ? '?': '&';
-            url += 'rev=' + encodeURIComponent(data.rev);
-        }
-        return exports.request('DELETE', url, data, callback);
-    };
-
-    // non-standard HTTP method, may not work in all browsers
-    exports.copy = function (from, to, callback) {
-        var opt = {
-            headers: {'Destination': to}
-        };
-        return exports.request('COPY', from, null, opt, callback);
-    };
-
-    exports.changes = function (dburl, q) {
-        q = q || {};
-        q.feed = q.feed || 'longpoll';
-        q.heartbeat = q.heartbeat || 10000;
-
-        var ev = new events.EventEmitter();
-        var request_in_progress = false;
-        var paused = false;
-
-        ev.pause = function () {
-            paused = true;
-        };
-
-        ev.resume = function () {
-            paused = false;
-            if (!request_in_progress) {
-                getChanges();
-            }
-        };
-
-        function getChanges() {
-            if (paused) {
-                return;
-            }
-            try {
-                var data = exports.stringifyQuery(q);
-            }
-            catch (e) {
-                return ev.emit('error', e);
-            }
-            var url = dburl + '/_changes';
-            request_in_progress = true;
-
-            exports.request('GET', url, data, function (err, data) {
-                request_in_progress = false;
-                if (err) {
-                    ev.emit('error', err);
-                    // retry after 1 sec
-                    setTimeout(getChanges, 1000);
-                }
-                if (!paused) {
-                    for (var i = 0, len = data.results.length; i < len; i++) {
-                        ev.emit('change', data.results[i]);
-                    }
-                    q.since = data.last_seq;
-                    getChanges();
-                }
-            });
-        }
-
-        // use setTimeout to pass control back to the browser briefly to
-        // allow the loading spinner to stop on page load
-        setTimeout(function () {
-            if (q.hasOwnProperty('since')) {
-                getChanges();
-            }
-            else {
-                exports.get(dburl, function (err, info) {
-                    if (err) {
-                        // no retry, just fail
-                        return ev.emit('error', err);
-                    }
-                    q.since = info.update_seq;
-                    getChanges();
-                });
-            }
-        }, 0);
-
-        return ev;
-    };
-
-}));
