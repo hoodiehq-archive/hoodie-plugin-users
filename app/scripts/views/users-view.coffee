@@ -5,16 +5,22 @@ class Users.UsersView extends Users.BaseView
   sortDirection: 'sort-up'
   blockSorting: false
 
-  getConfig: _.partial(couchr.get, '/_api/app/config')
-  setConfig: _.partial(couchr.put, '/_api/app/config')
+  getConfig: (callback) ->
+    hoodieAdmin.request('GET', '/app/config')
+    .fail((error) ->callback error)
+    .done (response) -> callback null, response
+
+  setConfig: (doc, callback) ->
+    hoodieAdmin.request('PUT', '/app/config', data: JSON.stringify(doc))
+    .fail((error) -> callback error)
+    .done (response) -> callback null, response
 
   updateConfig: (obj, callback) ->
     @getConfig (err, doc) =>
-      return callback(err)  if err
+      return callback(err) if err
+
       doc.config = _.extend(doc.config, obj)
       @setConfig doc, callback
-      return
-    return
 
 
   events :
@@ -34,6 +40,7 @@ class Users.UsersView extends Users.BaseView
     @getConfig (err, doc) =>
       console.log('doc: ',doc);
       return console.log(err)  if err
+      doc.config.additional_user_dbs = [] unless doc.config.additional_user_dbs
       @databases = doc.config.additional_user_dbs.join(', ')
       console.log('databases: ',@databases);
       @render()
@@ -216,11 +223,11 @@ class Users.UsersView extends Users.BaseView
     if @$el.find('[name=userDatabases]')[0].checkValidity()
       dbs = @$el.find("[name=userDatabases]").val().replace(RegExp(" ", "g"), "").split(",")
       console.log('dbs: ',dbs);
-      @updateConfig 
+      @updateConfig
         additional_user_dbs: dbs
       , (err) =>
         if err
-          @setConfig 
+          @setConfig
             additional_user_dbs: dbs
           console.log err
       return

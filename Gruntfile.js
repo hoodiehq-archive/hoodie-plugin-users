@@ -121,7 +121,7 @@ module.exports = function (grunt) {
         cssDir: '.tmp/styles',
         imagesDir: 'app/images',
         javascriptsDir: 'app/scripts',
-        importPath: 'app/components',
+        // importPath: 'app/components',
         relativeAssets: true
       },
       dist: {},

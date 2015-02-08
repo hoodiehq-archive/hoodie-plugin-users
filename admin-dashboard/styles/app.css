@@ -13,7 +13,7 @@ th.sort-header {
   cursor: pointer;
 }
 
-/* line 17, ../../app/styles/main.scss */
+/* line 16, ../../app/styles/main.scss */
 th.sort-header::-moz-selection,
 th.sort-header::selection {
   background: transparent;
@@ -36,7 +36,7 @@ table th.sort-header:hover:after {
   visibility: visible;
 }
 
-/* line 35, ../../app/styles/main.scss */
+/* line 33, ../../app/styles/main.scss */
 table th.sort-up:after,
 table th.sort-down:after,
 table th.sort-down:hover:after {
