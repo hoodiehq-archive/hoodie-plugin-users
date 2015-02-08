@@ -243,20 +243,34 @@
 
     UsersView.prototype.blockSorting = false;
 
-    UsersView.prototype.getConfig = _.partial(couchr.get, '/_api/app/config');
 
-    UsersView.prototype.setConfig = _.partial(couchr.put, '/_api/app/config');
 
-    UsersView.prototype.updateConfig = function(obj, callback) {
-      this.getConfig((function(_this) {
-        return function(err, doc) {
-          if (err) {
+
+
+
+    UsersView.prototype.getConfig = function getConfig(callback) {
+      hoodieAdmin.request('GET', '/app/config')
+      .fail(function(error) { callback(error); })
+      .done(function(response) { callback(null, response); });
+    };
+
+    UsersView.prototype.setConfig = function setConfig(doc, callback) {
+      hoodieAdmin.request('PUT', '/app/config', {
+        data: JSON.stringify(doc)
+      })
+      .fail(function(error) { callback(error); })
+      .done(function(response) { callback(null, response); });
+    };
+
+    UsersView.prototype.updateConfig = function updateConfig(obj, callback) {
+      var view = this;
+      this.getConfig(function (err, doc) {
+        if (err) {
             return callback(err);
-          }
-          doc.config = _.extend(doc.config, obj);
-          _this.setConfig(doc, callback);
-        };
-      })(this));
+        }
+        doc.config = _.extend(doc.config, obj);
+        view.setConfig(doc, callback);
+      });
     };
 
     UsersView.prototype.events = {
@@ -278,6 +292,9 @@
           console.log('doc: ', doc);
           if (err) {
             return console.log(err);
+          }
+          if (! doc.config.additional_user_dbs) {
+            doc.config.additional_user_dbs = [];
           }
           _this.databases = doc.config.additional_user_dbs.join(', ');
           console.log('databases: ', _this.databases);
@@ -610,7 +627,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
-  
+
   var buffer = "", stack1;
   buffer += "\n  ";
   stack1 = helpers['with'].call(depth0, (depth0 && depth0.editableUser), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
@@ -619,7 +636,7 @@ function program1(depth0,data) {
   return buffer;
   }
 function program2(depth0,data) {
-  
+
   var buffer = "", stack1, helper;
   buffer += "\n  <h2>Edit user '";
   if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -638,7 +655,7 @@ function program2(depth0,data) {
   }
 
 function program4(depth0,data) {
-  
+
   var buffer = "", stack1, helper;
   buffer += "\n  <!--\n  <h2>Settings</h2>\n  <p>Configure whether users must confirm their signup and if yes, set up the email they will receive for this purpose.</p>\n  <form>\n    ";
   stack1 = helpers['if'].call(depth0, (depth0 && depth0.emailTransportNotConfigured), {hash:{},inverse:self.program(7, program7, data),fn:self.program(5, program5, data),data:data});
@@ -672,13 +689,13 @@ function program4(depth0,data) {
   return buffer;
   }
 function program5(depth0,data) {
-  
-  
+
+
   return "\n    <section>\n      <div class=\"control-group\">\n        <label>\n          Signup confirmation\n        </label>\n        <div class=\"controls\">\n          <span class=\"note\">Email needs to be configured in <a href=\"/modules/appconfig\">Appconfig</a> before enabling signup confirmation</span>\n        </div>\n      </div>\n    </section>\n    ";
   }
 
 function program7(depth0,data) {
-  
+
   var buffer = "", stack1, helper;
   buffer += "\n    <section>\n      <div class=\"control-group\">\n        <label>\n          Signup confirmation\n        </label>\n        <div class=\"controls\">\n          <label class=\"checkbox\">\n            <input type=\"checkbox\" name=\"confirmationMandatory\" class=\"formCondition\" data-conditions=\"true:.confirmationOptions\"> is mandatory\n          </label>\n        </div>\n      </div>\n    </section>\n\n    <section class=\"confirmationOptions\">\n      <div class=\"control-group\">\n        <label>\n          From address\n        </label>\n        <div class=\"controls\">\n          <input type=\"email\" name=\"confirmationEmailFrom\" value=\""
     + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.config)),stack1 == null || stack1 === false ? stack1 : stack1.confirmationEmailFrom)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
@@ -697,7 +714,7 @@ function program7(depth0,data) {
   }
 
 function program9(depth0,data) {
-  
+
   var buffer = "", stack1, helper;
   buffer += " value=\"";
   if (helper = helpers.databases) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -708,7 +725,7 @@ function program9(depth0,data) {
   }
 
 function program11(depth0,data) {
-  
+
   var buffer = "", stack1, helper;
   buffer += " value=\"";
   if (helper = helpers.searchQuery) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -719,13 +736,13 @@ function program11(depth0,data) {
   }
 
 function program13(depth0,data) {
-  
-  
+
+
   return "\n        <button class=\"btn clearSearch\">Clear search</button>\n        ";
   }
 
 function program15(depth0,data) {
-  
+
   var buffer = "", stack1;
   buffer += "\n    <table id=\"userList\" class=\"table users table-striped\">\n      <thead>\n        <tr>\n          <th data-sort-by=\"username\">Username</th>\n          <th data-sort-by=\"signupDate\">Signup date</th>\n          <th data-sort-by=\"state\">State</th>\n          <th class=\"no-sort\"></th>\n        </tr>\n      </thead>\n      <tbody>\n        ";
   stack1 = helpers.each.call(depth0, (depth0 && depth0.users), {hash:{},inverse:self.noop,fn:self.program(16, program16, data),data:data});
@@ -734,7 +751,7 @@ function program15(depth0,data) {
   return buffer;
   }
 function program16(depth0,data) {
-  
+
   var buffer = "", stack1, helper, options;
   buffer += "\n        <tr data-id=\"";
   if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -771,7 +788,7 @@ function program16(depth0,data) {
   return buffer;
   }
 function program17(depth0,data) {
-  
+
   var buffer = "", stack1, helper, options;
   buffer += "\n            <div class=\"inTableError\">\n              <span class=\"error\">";
   if (helper = helpers.$state) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -792,7 +809,7 @@ function program17(depth0,data) {
   }
 
 function program19(depth0,data) {
-  
+
   var buffer = "", stack1, helper, options;
   buffer += "\n            ";
   stack1 = (helper = helpers.inArray || (depth0 && depth0.inArray),options={hash:{},inverse:self.program(22, program22, data),fn:self.program(20, program20, data),data:data},helper ? helper.call(depth0, (depth0 && depth0.roles), "confirmed", options) : helperMissing.call(depth0, "inArray", (depth0 && depth0.roles), "confirmed", options));
@@ -801,19 +818,19 @@ function program19(depth0,data) {
   return buffer;
   }
 function program20(depth0,data) {
-  
-  
+
+
   return "\n            <span class=\"pill success\">confirmed</span>\n            ";
   }
 
 function program22(depth0,data) {
-  
-  
+
+
   return "\n            <span class=\"pill warn\">unconfirmed</span>\n            ";
   }
 
 function program24(depth0,data) {
-  
+
   var buffer = "", stack1, helper;
   buffer += "\n    <div class=\"tableStatus\">\n      <p class=\"currentSearchTerm muted\">";
   if (helper = helpers.resultsDesc) { stack1 = helper.call(depth0, {hash:{},data:data}); }
