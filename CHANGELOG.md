@@ -1,3 +1,12 @@
+<a name="2.1.3"></a>
+### 2.1.3 (2015-02-08)
+
+
+#### Bug Fixes
+
+* avoid 401 errors when setting extra user databases ([0b93d3a9](https://github.com/hoodiehq/hoodie-plugin-users/commit/0b93d3a9677b38cc36b4bbbd655587a6a6ded00f))
+
+
 <a name="2.1.2"></a>
 ### 2.1.2 (2014-11-12)
 
