@@ -25,22 +25,24 @@
     "grunt-env": "^0.4.1",
     "grunt-hoodie": "^0.5.4",
     "grunt-mocha-browser": "0.0.4",
-    "grunt-release-hoodie": "^2.7.0",
+    "grunt-release-hoodie": "^2.9.1",
     "grunt-shell": "^0.6.4",
     "grunt-simple-mocha": "^0.4.0",
     "grunt-usemin": "^0.1.9",
-    "hoodie-server": "^0.9.30",
+    "hoodie": "^2.0.3",
+    "hoodie-server": "^3.0.0",
     "load-grunt-tasks": "^0.6.0",
     "mocha": "~1.17.1"
   },
   "hoodie": {
     "hoodiejs": "node_modules/hoodie/src/hoodie",
-    "plugins": []
+    "plugins": [
+      "hoodie-plugin-users"
+    ]
   },
   "dependencies": {
     "async": "^0.9.0",
     "bs58": "^1.2.0",
-    "hoodie": "^1.0.0",
     "lodash": "^2.4.1",
     "simplesmtp": "^0.3.32"
   },
