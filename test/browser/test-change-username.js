@@ -34,9 +34,9 @@ suite('change username', function () {
               assert.ok(false, err.message);
             })
             .done(function () {
-              $.getJSON('/_api/_users/org.couchdb.user%3Auser%2Fchangename1')
+              hoodie.request('get', '/_users/org.couchdb.user%3Auser%2Fchangename1')
                 .fail(function (err) {
-                  $.getJSON('/_api/_users/org.couchdb.user%3Auser%2Fchangename2')
+                  hoodie.request('get', '/_users/org.couchdb.user%3Auser%2Fchangename2')
                     .fail(function (err) {
                       assert.ok(false, err.message);
                     })

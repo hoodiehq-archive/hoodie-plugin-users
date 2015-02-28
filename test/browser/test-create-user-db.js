@@ -20,13 +20,13 @@ suite('create user db', function () {
     this.timeout(10000);
     hoodie.account.signUp(newUsername(), 'password')
       .then(function () {
-        return $.getJSON('/_api/_all_dbs');
+        return hoodie.request('get', '/user%2f' + hoodie.id());
       })
       .fail(function (err) {
         assert.ok(false, err.message);
       })
       .done(function (data) {
-        assert.notEqual(data.indexOf('user/' + hoodie.id()), -1);
+        assert.ok(data.db_name, 'user/'+hoodie.id());
         done();
       });
   });
@@ -44,7 +44,7 @@ suite('create user db', function () {
           })
           .done(function (doc) {
             setTimeout(function () {
-              $.getJSON('/_api/user%2F' + hoodie.id() + '/example%2F' + doc.id)
+              hoodie.request('get', '/user%2F' + hoodie.id() + '/example%2F' + doc.id)
                 .fail(function (err) {
                   assert.ok(false, JSON.stringify(err));
                 })
@@ -66,7 +66,7 @@ suite('create user db', function () {
       .done(function () {
         var otherId = hoodie.id();
         hoodie.account.signOut().done(function (doc) {
-          $.getJSON('/_api/user%2F' + otherId)
+          hoodie.request('get', '/user%2F' + otherId)
             .fail(function (err) {
               assert.equal(err.status, 401, 'expects unauthorized');
               done();
@@ -96,7 +96,7 @@ suite('create user db', function () {
       })
       .done(function () {
         assert.equal(hoodie.account.username, otherUsername);
-        $.getJSON('/_api/user%2F' + firstId)
+        hoodie.request('get', '/user%2F' + firstId)
           .fail(function (err) {
             assert.equal(err.status, 401, 'expects unauthorized');
             done();
@@ -112,13 +112,13 @@ suite('create user db', function () {
     this.timeout(10000);
     hoodie.account.signUp(newUsername(), 'password')
       .then(function () {
-        return $.getJSON('/_api/_all_dbs');
-      })
-      .fail(function (err) {
-        assert.ok(false, err.message);
+        return hoodie.request('get', '/user%2f' + hoodie.id() + '-photos');
       })
       .done(function (data) {
-        assert.equal(data.indexOf('user/' + hoodie.id() + '-photos'), -1);
+        assert.notOk(data);
+      })
+      .fail(function (err) {
+        assert.equal(404, err.status);
         done();
       });
   });
@@ -160,13 +160,13 @@ suite('create user db', function () {
     enableAdditionalDbs(['photos'], function() {
       hoodie.account.signUp(newUsername(), 'password')
         .then(function () {
-          return $.getJSON('/_api/_all_dbs');
+          return hoodie.request('get', '/user%2f' + hoodie.id() + '-photos');
         })
         .fail(function (err) {
           assert.ok(false, err.message);
         })
         .done(function (data) {
-          assert.notEqual(data.indexOf('user/' + hoodie.id() + '-photos'), -1);
+          assert.equal(data.db_name, 'user/' + hoodie.id() + '-photos');
           done();
         });
     });
@@ -175,16 +175,23 @@ suite('create user db', function () {
   test('two additional databases added on signUp when configured', function (done) {
     this.timeout(10000);
     enableAdditionalDbs(['photos', 'horses'], function() {
+      // Promise.all didn't work here
       hoodie.account.signUp(newUsername(), 'password')
         .then(function () {
-          return $.getJSON('/_api/_all_dbs');
+          return hoodie.request('get', '/user%2f' + hoodie.id() + '-photos')
+          .then(function(data) {
+            return hoodie.request('get', '/user%2f' + hoodie.id() + '-horses')
+            .then(function(data2) {
+              return [data, data2];
+            })
+          })
         })
         .fail(function (err) {
           assert.ok(false, err.message);
         })
         .done(function (data) {
-          assert.notEqual(data.indexOf('user/' + hoodie.id() + '-photos'), -1);
-          assert.notEqual(data.indexOf('user/' + hoodie.id() + '-horses'), -1);
+          assert.equal(data[0].db_name, 'user/' + hoodie.id() + '-photos');
+          assert.equal(data[1].db_name, 'user/' + hoodie.id() + '-horses');
           done();
         });
     });
@@ -198,26 +205,22 @@ suite('create user db', function () {
           assert.ok(false, err.message);
         })
         .done(function () {
-          setTimeout(function() {
-            var db = hoodie.open('user/' + hoodie.id() + '-photos');
-            db.add('example', {title: 'foo'})
-              .fail(function (err) {
-                assert.ok(false, err.message);
-              })
-              .done(function (doc) {
-                setTimeout(function () {
-                  var url = '/_api/user%2F' + hoodie.id() + '-photos/' + encodeURIComponent(doc.id);
-                  $.getJSON(url)
-                    .fail(function (err) {
-                      assert.ok(false, JSON.stringify(err));
-                    })
-                    .done(function (data) {
-                      assert.equal(data.title, 'foo');
-                      done();
-                    });
-                }, 3000);
-              });
-          }, 5000);
+          var db = hoodie.open('user/' + hoodie.id() + '-photos');
+          db.add('example', {title: 'foo'})
+            .fail(function (err) {
+              assert.ok(false, err.message);
+            })
+            .done(function (doc) {
+              var url = '/user%2F' + hoodie.id() + '-photos/example%2F' + doc.id;
+              hoodie.request('get', url)
+                .fail(function (err) {
+                  assert.ok(false, JSON.stringify(err));
+                })
+                .done(function (data) {
+                  assert.equal(data.title, 'foo');
+                  done();
+                });
+            });
         });
     });
   });
@@ -241,10 +244,10 @@ suite('create user db', function () {
         })
         .done(function () {
           assert.equal(hoodie.account.username, otherUsername);
-          $.getJSON('/_api/user%2F' + firstId + '-photos')
+          hoodie.request('get', '/user%2F' + firstId + '-photos')
             .fail(function (err) {
               assert.equal(err.status, 401, 'expects unauthorized');
-              $.getJSON('/_api/user%2F' + firstId + '-horses')
+              hoodie.request('get', '/user%2F' + firstId + '-horses')
                 .fail(function (err) {
                   assert.equal(err.status, 401, 'expects unauthorized');
                   done();
@@ -270,10 +273,10 @@ suite('create user db', function () {
         .done(function () {
           var otherId = hoodie.id();
           hoodie.account.signOut().done(function (doc) {
-            $.getJSON('/_api/user%2F' + otherId + '-photos')
+            hoodie.request('get', '/user%2F' + otherId + '-photos')
               .fail(function (err) {
                 assert.equal(err.status, 401, 'expects unauthorized');
-                $.getJSON('/_api/user%2F' + otherId + '-horses')
+                hoodie.request('get', '/user%2F' + otherId + '-horses')
                   .fail(function (err) {
                     assert.equal(err.status, 401, 'expects unauthorized');
                     done();

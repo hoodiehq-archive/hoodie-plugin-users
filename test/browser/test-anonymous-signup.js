@@ -13,14 +13,14 @@ suite('create anonymous user db', function () {
     this.timeout(10000);
     hoodie.task.start('testtask', {title: 'foo'});
     setTimeout(function () {
-      $.getJSON('/_api/_all_dbs')
+      hoodie.request('get', '/user%2f' + hoodie.id())
         .fail(function (err) {
           assert.ok(false, err.message);
         })
         .done(function (data) {
           var dbname = 'user/' + hoodie.id();
-          assert.notEqual(data.indexOf(dbname), -1);
-          $.getJSON('/_api/' + encodeURIComponent(dbname) + '/_all_docs?' +
+          assert.ok(data.db_name, 'user/'+hoodie.id());
+          hoodie.request('get', '/' + encodeURIComponent(dbname) + '/_all_docs?' +
             'include_docs=true&' +
             'start_key=%22%24testtask%22&' +
             'end_key=%22%24testtask%7B%7D%22')
@@ -36,7 +36,7 @@ suite('create anonymous user db', function () {
                 .done(function () {
                   // make sure we can still access our db with task
                   var dbname = 'user/' + hoodie.id();
-                  $.getJSON('/_api/' + encodeURIComponent(dbname) + '/_all_docs?' +
+                  hoodie.request('get', '/' + encodeURIComponent(dbname) + '/_all_docs?' +
                     'include_docs=true&' +
                     'start_key=%22%24testtask%22&' +
                     'end_key=%22%24testtask%7B%7D%22')
