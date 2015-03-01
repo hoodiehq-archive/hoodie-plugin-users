@@ -99,24 +99,26 @@ suite('password reset', function () {
 
   test('reset password - username is not email address', function (done) {
     this.timeout(20000);
-    hoodie.account.signUp('resetuser2', 'password')
-      .fail(function (err) {
-        assert.ok(false, err.message);
-      })
-      .done(function () {
-        hoodie.account.signOut().done(function () {
-          hoodie.account.resetPassword('resetuser2')
-            .fail(function (err) {
-              assert.ok(
-                /^No email address found$/.test(err.message)
-              );
-              done();
-            })
-            .done(function () {
-              assert.ok(false, 'password reset should fail');
+    hoodie.account.signOut()
+      .fail(done)
+      .done(function() {
+        hoodie.account.signUp('resetuser2', 'password')
+          .fail(done)
+          .done(function () {
+            hoodie.account.signOut().done(function () {
+              hoodie.account.resetPassword('resetuser2')
+                .fail(function (err) {
+                  assert.ok(
+                    /^No email address found$/.test(err.message)
+                  );
+                  done();
+                })
+                .done(function () {
+                  assert.ok(false, 'password reset should fail');
+                });
             });
-        });
-      });
+          });
+      })
   });
 
 });
@@ -136,9 +138,7 @@ suite('password reset - SMTP server down', function () {
     // update app config to point to fake smtp server for testing,
     // the mail server writes recieved messages to files in www/emails
     hoodie.request('get', '/app/config', {headers: adminAuthorizationHeaders})
-      .fail(function (err) {
-        assert.ok(false, err.message);
-      })
+      .fail(done)
       .done(function (doc) {
         doc.config.email_host = 'not-a-real-host-87632184687216498214',
         doc.config.email_port = 9898;
@@ -153,9 +153,7 @@ suite('password reset - SMTP server down', function () {
           data: JSON.stringify(doc),
           contentType: 'application/json'
         })
-        .fail(function (err) {
-          assert.ok(false, err.message);
-        })
+        .fail(done)
         .done(function (res) {
           done();
         });
@@ -164,24 +162,26 @@ suite('password reset - SMTP server down', function () {
 
   test('reset password - fail to send email', function (done) {
     this.timeout(20000);
-    hoodie.account.signUp('resetuser3@example.com', 'password')
-      .fail(function (err) {
-        assert.ok(false, err.message);
-      })
-      .done(function () {
-        hoodie.account.signOut().done(function () {
-          hoodie.account.resetPassword('resetuser3@example.com')
-            .fail(function (err) {
-              assert.ok(
-                /^Failed to send password reset email$/.test(err.message)
-              );
-              done();
-            })
-            .done(function () {
-              assert.ok(false, 'password reset should fail');
+    hoodie.account.signOut()
+      .fail(done)
+      .done(function() {
+        hoodie.account.signUp('resetuser3@example.com', 'password')
+          .fail(done)
+          .done(function () {
+            hoodie.account.signOut().done(function () {
+              hoodie.account.resetPassword('resetuser3@example.com')
+                .fail(function (err) {
+                  assert.ok(
+                    /^Failed to send password reset email$/.test(err.message)
+                  );
+                  done();
+                })
+                .done(function () {
+                  assert.ok(false, 'password reset should fail');
+                });
             });
-        });
-      });
+          });
+    });
   });
 
 });
