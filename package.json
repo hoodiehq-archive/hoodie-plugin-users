@@ -1,6 +1,6 @@
 {
   "name": "hoodie-plugin-users",
-  "version": "2.1.4",
+  "version": "2.2.0",
   "description": "Hoodie plugin for handling user accounts and dbs",
   "repository": {
     "type": "git",
@@ -48,5 +48,5 @@
     "test:own": "grunt test",
     "test": "grunt ci --verbose"
   },
-  "codename": "awe-inspiring-fox"
+  "codename": "incredible-pig"
 }

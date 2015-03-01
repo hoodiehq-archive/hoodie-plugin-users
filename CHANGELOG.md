@@ -1,3 +1,18 @@
+<a name="2.1.4"></a>
+### 2.1.4 (2015-03-01)
+
+
+#### Bug Fixes
+
+* remove couchr in CoffeeScript source failes, see 0b93d3a ([2a8632b1](https://github.com/hoodiehq/hoodie-plugin-users/commit/2a8632b179e77af6806ffc7a4d09f0ac516c16fa))
+
+
+#### Features
+
+* **hooks:** add plugin hooks to enable delegation of user confirmation ([476be4dc](https://github.com/hoodiehq/hoodie-plugin-users/commit/476be4dc5a174110cb0f3b5452a28f42ca5fd42d))
+* **users:** delete additional user dbs on user delete ([562714b0](https://github.com/hoodiehq/hoodie-plugin-users/commit/562714b03deaa343c51d11e08e22b5799df83808))
+
+
 <a name="2.1.3"></a>
 ### 2.1.3 (2015-02-08)
 
