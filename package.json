@@ -29,13 +29,11 @@
     "grunt-shell": "^0.6.4",
     "grunt-simple-mocha": "^0.4.0",
     "grunt-usemin": "^0.1.9",
-    "hoodie": "^2.0.3",
     "hoodie-server": "^3.1.0",
     "load-grunt-tasks": "^0.6.0",
     "mocha": "~1.17.1"
   },
   "hoodie": {
-    "hoodiejs": "node_modules/hoodie/src/hoodie",
     "plugins": [
       "hoodie-plugin-users"
     ]
