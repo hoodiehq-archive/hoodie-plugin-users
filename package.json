@@ -1,6 +1,6 @@
 {
   "name": "hoodie-plugin-users",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Hoodie plugin for handling user accounts and dbs",
   "repository": {
     "type": "git",
