@@ -79,7 +79,7 @@ module.exports = function (hoodie, callback) {
     }
   });
 
-  async.applyEach([
+  async.applyEachSeries([
     exports.create_user_index,
     exports.create_user_index_by_created_at
   ], hoodie, function(error) {

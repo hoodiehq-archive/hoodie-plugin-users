@@ -34,9 +34,7 @@
     "mocha": "~1.17.1"
   },
   "hoodie": {
-    "plugins": [
-      "hoodie-plugin-users"
-    ]
+    "plugins": []
   },
   "dependencies": {
     "async": "^0.9.0",
