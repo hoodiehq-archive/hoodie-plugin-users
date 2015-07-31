@@ -104,7 +104,7 @@ module.exports = function (hoodie, callback) {
 // with _view/by-name
 exports.create_user_index = function create_user_index(hoodie, callback) {
   var users_db = hoodie.database('_users');
-  var index_name = 'users-by-name';
+  var index_name = 'by-name';
 
   var mapReduce = {
     /* jshint ignore:start */
@@ -134,7 +134,7 @@ exports.create_user_index = function create_user_index(hoodie, callback) {
 // with _view/by-created-at
 exports.create_user_index_by_created_at = function create_user_index_by_created_at(hoodie, callback) {
   var users_db = hoodie.database('_users');
-  var index_name = 'users-by-created-at';
+  var index_name = 'by-created-at';
 
   var mapReduce = {
     /* jshint ignore:start */
