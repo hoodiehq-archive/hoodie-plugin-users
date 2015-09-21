@@ -20,7 +20,7 @@
     "grunt-contrib-htmlmin": "^0.3.0",
     "grunt-contrib-imagemin": "^0.8.1",
     "grunt-contrib-jshint": "^0.9.2",
-    "grunt-contrib-uglify": "^0.5.1",
+    "grunt-contrib-uglify": "0.9.2",
     "grunt-contrib-watch": "^0.6.0",
     "grunt-env": "^0.4.1",
     "grunt-hoodie": "^0.5.4",
