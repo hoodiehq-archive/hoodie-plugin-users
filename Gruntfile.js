@@ -132,19 +132,6 @@ module.exports = function (grunt) {
       }
     },
 
-    jshint: {
-      files: [
-        'Gruntfile.js',
-        'hoodie.template.js',
-        'index.js',
-        'lib/*.js',
-        'hooks/*.js'
-      ],
-      options: {
-        jshintrc: '.jshintrc'
-      }
-    },
-
     simplemocha: {
       options: {
         ui: 'tdd',
@@ -263,10 +250,6 @@ module.exports = function (grunt) {
         ],
         tasks: ['handlebars', 'livereload']
       },
-      jshint: {
-        files: ['<%= jshint.files %>'],
-        tasks: 'jshint'
-      },
       unittest: {
         files: ['index.js', 'lib/*.js'],
         tasks: 'test:unit'
@@ -311,11 +294,7 @@ module.exports = function (grunt) {
     'shell:killHoodie'
   ]);
   grunt.registerTask('test', [
-    'jshint',
-    'test:unit',
-    // disabling browser tests because they fail for PhantomJS < 2.0
-    // once PhantomJS becomes available for (grunt-)mocha-browser, reanable this
-    // 'test:browser'
+    'test:unit'
   ]);
 
   grunt.registerTask('server', [

@@ -1,6 +1,12 @@
-/data
-/node_modules
-/test/browser/emails
-.tmp
-.sass-cache
-/app/components
+# common
+
+data
+coverage
+node_modules
+*.log
+*.dump
+*.swp
+.DS_Store
+.nyc_output
+
+test/browser/emails
