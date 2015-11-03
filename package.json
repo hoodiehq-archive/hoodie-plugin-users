@@ -13,6 +13,9 @@
     "simplesmtp": "^0.3.32"
   },
   "scripts": {
-    "test": "exit 1"
+    "test": "standard"
+  },
+  "devDependencies": {
+    "standard": "^5.3.1"
   }
 }
