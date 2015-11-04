@@ -19,7 +19,7 @@ module.exports = function (hoodie, callback) {
 
   hoodie.account.on('user:change', userChange)
   hoodie.account.on('user_anonymous:change', userChange)
-  hoodie.account.on('$passwordReset:change', _.partial(require('./lib/password_reset'), hoodie))
+  hoodie.account.on('$passwordReset:change', _.partial(require('./lib/password-reset'), hoodie))
 
   async.series([
     async.apply(exports.createIndex, hoodie, 'by-name', 'name'),
