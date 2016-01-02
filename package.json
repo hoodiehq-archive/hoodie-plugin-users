@@ -2,7 +2,7 @@
   "name": "hoodie-plugin-users",
   "description": "Hoodie plugin for handling user accounts and dbs",
   "dependencies": {
-    "async": "^1.5.0",
+    "async": "^1.5.1",
     "bs58": "^3.0.0",
     "lodash": "^3.10.1",
     "simplesmtp": "^0.3.32"
