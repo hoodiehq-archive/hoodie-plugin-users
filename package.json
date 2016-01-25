@@ -27,5 +27,7 @@
   "scripts": {
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "test": "standard"
-  }
+  },
+  "license": "Apache-2.0",
+  "author": "The Hoodie Community and other contributors | http://hood.ie/"
 }
