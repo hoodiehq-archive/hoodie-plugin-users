@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "semantic-release": "^4.3.5",
-    "standard": "^6.0.8"
+    "standard": "^7.1.1"
   },
   "publishConfig": {
     "tag": "next"
